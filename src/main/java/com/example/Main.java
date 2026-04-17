@@ -1,21 +1,27 @@
 package com.example;
 
-import com.example.db.DatabaseManager;
+import com.example.model.TheoryPage;
+import com.example.dao.TheoryDAO;
 
 import java.sql.*;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        Connection conn = DatabaseManager.getConnection();
-        System.out.println("Connected!");
+        TheoryDAO dao = new TheoryDAO();
 
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM theory_pages");
-
-        while (rs.next()) {
-            System.out.println(rs.getString("title"));
+        for (TheoryPage page : dao.getAllPages()) {
+            System.out.println(page.getPageOrder() + " - " + page.getTitle());
         }
 
+        Runnable task = () -> {
+            try {
+                TheoryPage page = dao.getPageByOrder(3);
+                System.out.println(page.getPageOrder() + " - " + page.getTitle());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
 
+        task.run();
     }
 }
