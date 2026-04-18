@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.TheoryController">
+   <children>
+      <Label fx:id="titleLabel" alignment="CENTER" layoutX="183.0" layoutY="87.0" prefHeight="79.0" prefWidth="1067.0" text="Title" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="920.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="100.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="bodyTextArea" editable="false" layoutX="620.0" layoutY="207.0" prefHeight="652.0" prefWidth="1120.0" wrapText="true" AnchorPane.bottomAnchor="220.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="210.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextArea>
+      <Button fx:id="nextButton" alignment="CENTER" layoutX="1160.0" layoutY="955.0" mnemonicParsing="false" onAction="#handleNext" prefHeight="45.0" prefWidth="120.0" text="Next" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="1160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="955.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="previousButton" alignment="CENTER" layoutX="928.0" layoutY="955.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="45.0" prefWidth="120.0" text="Previous" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="928.0" AnchorPane.rightAnchor="392.0" AnchorPane.topAnchor="955.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Label fx:id="pageIndicatorLabel" alignment="CENTER" layoutX="1066.0" layoutY="965.0" prefHeight="25.0" prefWidth="74.0" text="PageNo" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="1066.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="965.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

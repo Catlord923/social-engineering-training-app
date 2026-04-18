@@ -1,27 +1,27 @@
 package com.example;
 
-import com.example.model.TheoryPage;
-import com.example.dao.TheoryDAO;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.sql.*;
+public class Main extends Application {
 
-public class Main {
-    public static void main(String[] args) throws SQLException {
-        TheoryDAO dao = new TheoryDAO();
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("/view/TheoryScreen.fxml")
+        );
 
-        for (TheoryPage page : dao.getAllPages()) {
-            System.out.println(page.getPageOrder() + " - " + page.getTitle());
-        }
+        Scene scene = new Scene(fxmlLoader.load(), 1440, 1080);
 
-        Runnable task = () -> {
-            try {
-                TheoryPage page = dao.getPageByOrder(3);
-                System.out.println(page.getPageOrder() + " - " + page.getTitle());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        };
+        stage.setTitle("Social Engineering Training App");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
 
-        task.run();
+    public static void main(String[] args) {
+        launch();
     }
 }
