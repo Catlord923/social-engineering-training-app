@@ -1,5 +1,9 @@
 package com.example.model;
 
+/**
+ * Immutable model representing a single theory topic.
+ * Acts as a Data Transfer Object (DTO) between the DAO and the Controller.
+ */
 public class TheoryPage {
     private final int id;
     private final int pageOrder;

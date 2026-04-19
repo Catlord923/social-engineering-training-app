@@ -13,6 +13,11 @@ import javafx.fxml.FXML;
 
 import java.util.List;
 
+/**
+ * Controller for the TheoryScreen view.
+ * Handles navigation between pages and dynamically renders raw text into
+ * stylized UI components (headings, bullets, paragraphs).
+ */
 public class TheoryController {
 
     @FXML
@@ -37,6 +42,10 @@ public class TheoryController {
     private List<TheoryPage> pages;
     private int currentIndex = 0;
 
+    /**
+     * Initializes the view by fetching data and displaying the first page.
+     * Handles the "empty state" if no data is found.
+     */
     @FXML
     public void initialize() {
         pages = theoryDAO.getAllPages();
@@ -44,14 +53,18 @@ public class TheoryController {
         if (pages != null && !pages.isEmpty()) {
             showPage(currentIndex);
         } else {
-            titleLabel.setText("No theory pages found");
-            bodyContainer.getChildren().clear();
-            previousButton.setDisable(true);
-            nextButton.setDisable(true);
+            handleEmptyState();
+        }
+    }
 
-            if (pageIndicatorLabel != null) {
-                pageIndicatorLabel.setText("0 / 0");
-            }
+    private void handleEmptyState() {
+        titleLabel.setText("No theory pages found");
+        bodyContainer.getChildren().clear();
+        previousButton.setDisable(true);
+        nextButton.setDisable(true);
+
+        if (pageIndicatorLabel != null) {
+            pageIndicatorLabel.setText("0 / 0");
         }
     }
 
@@ -71,14 +84,21 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Updates all UI elements to reflect the page at the given index.
+     * @param index The position of the page in the list.
+     */
     private void showPage(int index) {
         TheoryPage page = pages.get(index);
 
         titleLabel.setText(page.getTitle());
         renderBody(page.getBody());
 
+        // Resets scroll position to the top. Platform.runLater ensures
+        // the UI has finished layout updates before scrolling.
         Platform.runLater(() -> bodyScrollPane.setVvalue(0));
 
+        // Disable buttons at the start/end of the list
         previousButton.setDisable(index == 0);
         nextButton.setDisable(index == pages.size() - 1);
 
@@ -87,6 +107,11 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Main parser: Splits raw text into blocks and converts them to JavaFX Labels.
+     * Blocks are separated by double newlines.
+     * @param bodyText The raw string from the database.
+     */
     private void renderBody(String bodyText) {
         bodyContainer.getChildren().clear();
 
@@ -95,6 +120,8 @@ public class TheoryController {
         }
 
         String cleanedText = cleanText(bodyText);
+        // Split text whenever there are two or more newlines
+        // with whitespace in between (paragraph breaks)
         String[] blocks = cleanedText.split("\\n\\s*\\n");
 
         for (String block : blocks) {
@@ -104,6 +131,7 @@ public class TheoryController {
                 continue;
             }
 
+            // Determine block type based on content structure
             if (isBulletBlock(trimmedBlock)) {
                 addBulletBlock(trimmedBlock);
             } else if (isShortHeading(trimmedBlock)) {
@@ -114,16 +142,21 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Sanitizes input text to normalize line breaks and remove indentation.
+     * @return A clean string ready for parsing.
+     */
     private String cleanText(String text) {
         return text
-                .replace("\r\n", "\n")
-                .replace("\r", "\n")
-                .replaceAll("(?m)^[ \\t]+", "")
-                .replaceAll("\\n{3,}", "\n\n")
+                .replace("\r\n", "\n") // Convert CRLF line endings to LF
+                .replace("\r", "\n") // Convert CR line endings to LF
+                .replaceAll("(?m)^[ \\t]+", "") // Remove leading tabs/spaces per line - removes indentation
+                .replaceAll("\\n{3,}", "\n\n") // Collapse excessive spacing - 2+ lines
                 .trim();
     }
 
     private boolean isBulletBlock(String block) {
+        // A block is considered a bullet list if it contains lines starting with a dash
         String[] lines = block.split("\\n");
         int bulletCount = 0;
 
@@ -137,11 +170,17 @@ public class TheoryController {
         return bulletCount > 0;
     }
 
+    /**
+     * Heuristic for headings: Must be one line, < 60 chars, and end with a colon.
+     */
     private boolean isShortHeading(String block) {
         return !block.contains("\n")
                 && block.length() <= 60
                 && block.endsWith(":");
     }
+
+    // --- UI Methods ---
+    // These methods create stylized Labels to keep the text rendering logic clean.
 
     private void addParagraph(String text) {
         Label paragraphLabel = new Label(text);
@@ -182,6 +221,7 @@ public class TheoryController {
             }
 
             if (trimmed.startsWith("- ")) {
+                // Convert "- text" into "• text" with indentation
                 Label bulletLabel = new Label("• " + trimmed.substring(2));
                 bulletLabel.setWrapText(true);
                 bulletLabel.setMaxWidth(Double.MAX_VALUE);
@@ -194,7 +234,7 @@ public class TheoryController {
                 );
                 bodyContainer.getChildren().add(bulletLabel);
             } else {
-                addParagraph(trimmed);
+                addParagraph(trimmed); // Handle non-bullet lines within a bullet list block
             }
         }
     }

@@ -11,11 +11,17 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
 
+/**
+ * Controller for the initial Welcome screen.
+ * Displays introductory text and handles the transition to the main application modules.
+ */
 public class WelcomeController {
 
     @FXML
     private VBox bodyContainer;
 
+    // Hardcoded introduction text.
+    // Static content is kept here rather than a database for simpler initial loading.
     private static final String[] PARAGRAPHS = {
             "Welcome to this interactive cybersecurity training application.",
             "Many cyber attacks succeed not because of technical weaknesses, but because attackers manipulate people through trust, urgency, fear, or curiosity.",
@@ -25,6 +31,9 @@ public class WelcomeController {
             "Press Start to begin."
     };
 
+    /**
+     * Populates the welcome screen with text labels during initialization.
+     */
     @FXML
     public void initialize() {
         for (String text : PARAGRAPHS) {
@@ -32,6 +41,11 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * UI builder method to create stylized labels for the intro text.
+     * @param text The string to display in the label.
+     * @return A configured Label ready for the VBox.
+     */
     private Label makeParagraph(String text) {
         Label label = new Label(text);
         label.setWrapText(true);
@@ -45,13 +59,21 @@ public class WelcomeController {
         return label;
     }
 
+    /**
+     * Switches the scene from the WelcomeScreen to the Theory module.
+     * @param event The ActionEvent triggered by the Start button.
+     * @throws Exception If the FXML file cannot be found or loaded.
+     */
     @FXML
     private void handleStartButton(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(
                 getClass().getResource("/view/TheoryScreen.fxml")
         );
 
+        // Retrieve the current Stage from the button click event
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        // Swap the scene content
         stage.setScene(new Scene(root));
         stage.show();
     }
