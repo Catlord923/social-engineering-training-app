@@ -3,7 +3,6 @@ package com.example.controller;
 import com.example.model.TheoryPage;
 import com.example.dao.TheoryDAO;
 
-import javafx.scene.control.TextArea;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.fxml.FXML;
@@ -16,7 +15,7 @@ public class TheoryController {
     private Label titleLabel;
 
     @FXML
-    private TextArea bodyTextArea;
+    private Label bodyLabel;
 
     @FXML
     private Button previousButton;
@@ -35,14 +34,13 @@ public class TheoryController {
     public void initialize() {
         pages = theoryDAO.getAllPages();
 
-        bodyTextArea.setWrapText(true);
-        bodyTextArea.setEditable(false);
+        bodyLabel.setWrapText(true);
 
         if (pages != null && !pages.isEmpty()) {
             showPage(currentIndex);
         } else {
             titleLabel.setText("No theory pages found");
-            bodyTextArea.setText("");
+            bodyLabel.setText("");
             previousButton.setDisable(true);
             nextButton.setDisable(true);
 
@@ -72,7 +70,7 @@ public class TheoryController {
         TheoryPage page = pages.get(index);
 
         titleLabel.setText(page.getTitle());
-        bodyTextArea.setText(page.getBody());
+        bodyLabel.setText(page.getBody());
 
         previousButton.setDisable(index == 0);
         nextButton.setDisable(index == pages.size() - 1);
