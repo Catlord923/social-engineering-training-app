@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.TheoryController">
@@ -28,13 +29,11 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <ScrollPane fitToWidth="true" layoutX="659.0" layoutY="392.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="220.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="210.0">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="160.0" layoutY="215.0" pannable="true" prefHeight="650.0" prefWidth="1120.0" vbarPolicy="AS_NEEDED" fx:id="bodyScrollPane">
+
          <content>
-            <Label fx:id="bodyLabel" alignment="CENTER" lineSpacing="6.0" text="Label" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
+            <VBox fx:id="bodyContainer" alignment="TOP_LEFT" fillWidth="true" prefWidth="1080.0" spacing="18.0" style="-fx-padding: 30;">
+            </VBox>
          </content>
       </ScrollPane>
    </children>
