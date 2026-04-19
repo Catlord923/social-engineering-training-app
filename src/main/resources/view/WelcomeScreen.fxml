@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.WelcomeController">
+   <children>
+      <Label alignment="CENTER" layoutX="563.0" layoutY="124.0" text="Social Engineering Awareness" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="920.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="100.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="startButton" layoutX="592.0" layoutY="910.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="60.0" prefWidth="257.0" text="Start">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
+      <Label fx:id="welcomeBodyLabel" alignment="CENTER" layoutX="707.0" layoutY="532.0" lineSpacing="6.0" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="220.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="210.0">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+   </children>
+</AnchorPane>
