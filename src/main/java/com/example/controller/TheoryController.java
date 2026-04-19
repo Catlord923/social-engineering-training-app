@@ -3,13 +3,13 @@ package com.example.controller;
 import com.example.model.TheoryPage;
 import com.example.dao.TheoryDAO;
 
+import javafx.scene.control.ScrollPane;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
+import javafx.fxml.FXML;
 
 import java.util.List;
 
