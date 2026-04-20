@@ -17,14 +17,6 @@ public class TheoryPage {
         this.body = body;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public int getPageOrder() {
-        return pageOrder;
-    }
-
     public String getTitle() {
         return title;
     }

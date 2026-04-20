@@ -27,23 +27,11 @@ public class TransitionController {
     @FXML
     private Button continueButton;
 
-    /**
-     * The FXML loader can call initialize automatically.
-     * We leave it empty because the screen content is configured externally.
-     */
     @FXML
     public void initialize() {
         // Intentionally empty.
     }
 
-    /**
-     * Configures the transition screen text dynamically.
-     *
-     * @param title The main title shown at the top of the screen.
-     * @param bodyText The paragraph text shown in the main body area.
-     *                 Separate paragraphs with double newlines.
-     * @param buttonText The label for the continue button.
-     */
     public void configure(String title, String bodyText, String buttonText) {
         titleLabel.setText(title);
         continueButton.setText(buttonText);
@@ -66,11 +54,6 @@ public class TransitionController {
         }
     }
 
-    /**
-     * Handles the default continue action.
-     * For now this takes the user to the Scenario screen.
-     * Later you can make this configurable for Quiz as well.
-     */
     @FXML
     private void handleContinueButton(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(
