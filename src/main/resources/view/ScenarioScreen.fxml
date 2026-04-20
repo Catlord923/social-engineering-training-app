@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.ScenarioController">
+   <children>
+      <AnchorPane layoutX="33.0" layoutY="14.0" prefHeight="104.0" prefWidth="1374.0">
+         <children>
+            <Label fx:id="titleLabel" alignment="CENTER" layoutX="159.0" layoutY="14.0" prefHeight="30.0" prefWidth="1058.0" text="Title" wrapText="true">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="promptLabel" alignment="CENTER" layoutX="158.0" layoutY="57.0" prefHeight="30.0" prefWidth="1058.0" text="Prompt Label" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="progressLabel" alignment="CENTER" layoutX="1277.0" layoutY="47.0" text="Progress">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <ScrollPane fitToWidth="true" layoutX="33.0" layoutY="118.0" prefHeight="708.0" prefWidth="1374.0">
+         <content>
+            <VBox fx:id="contentContainer" prefWidth="1350.0" spacing="14.0" />
+         </content>
+      </ScrollPane>
+      <VBox fx:id="optionsContainer" layoutX="33.0" layoutY="843.0" prefHeight="181.0" prefWidth="1374.0" spacing="12.0" />
+   </children>
+</AnchorPane>
