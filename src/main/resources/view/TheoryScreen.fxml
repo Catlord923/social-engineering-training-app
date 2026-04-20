@@ -14,22 +14,22 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="nextButton" alignment="CENTER" layoutX="1160.0" layoutY="955.0" mnemonicParsing="false" onAction="#handleNext" prefHeight="45.0" prefWidth="120.0" text="Next" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="1160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="955.0">
+      <Button fx:id="nextButton" alignment="CENTER" layoutX="1100.0" layoutY="955.0" mnemonicParsing="false" onAction="#handleNext" prefHeight="45.0" prefWidth="180.0" text="Next" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="1100.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="955.0">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="previousButton" alignment="CENTER" layoutX="928.0" layoutY="955.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="45.0" prefWidth="120.0" text="Previous" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="928.0" AnchorPane.rightAnchor="392.0" AnchorPane.topAnchor="955.0">
+      <Button fx:id="previousButton" alignment="CENTER" layoutX="775.0" layoutY="955.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="45.0" prefWidth="180.0" text="Previous" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="775.0" AnchorPane.rightAnchor="485.0" AnchorPane.topAnchor="955.0">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Label fx:id="pageIndicatorLabel" alignment="CENTER" layoutX="1066.0" layoutY="965.0" prefHeight="25.0" prefWidth="74.0" text="PageNo" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="1066.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="965.0">
+      <Label fx:id="pageIndicatorLabel" alignment="CENTER" layoutX="990.0" layoutY="965.0" prefHeight="25.0" prefWidth="74.0" text="PageNo" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="990.0" AnchorPane.rightAnchor="376.0" AnchorPane.topAnchor="965.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="160.0" layoutY="215.0" pannable="true" prefHeight="650.0" prefWidth="1120.0" vbarPolicy="AS_NEEDED" fx:id="bodyScrollPane">
+      <ScrollPane fx:id="bodyScrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutX="160.0" layoutY="215.0" pannable="true" prefHeight="650.0" prefWidth="1120.0" vbarPolicy="AS_NEEDED">
 
          <content>
             <VBox fx:id="bodyContainer" alignment="TOP_LEFT" fillWidth="true" prefWidth="1080.0" spacing="18.0" style="-fx-padding: 30;">

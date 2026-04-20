@@ -8,7 +8,11 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.geometry.Pos;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -76,20 +80,61 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Logic for the 'Next' button.
+     * Either increments the page or triggers the transition to the next module.
+     */
     @FXML
-    private void handleNext() {
-        if (pages != null && currentIndex < pages.size() - 1) {
+    private void handleNext() throws Exception {
+
+        if (pages == null) {
+            return;
+        }
+
+        if (currentIndex < pages.size() - 1) {
             currentIndex++;
             showPage(currentIndex);
+        } else {
+            openTransitionScreen();
         }
     }
 
     /**
-     * Updates all UI elements to reflect the page at the given index.
+     * Loads the Transition Screen and manually injects configuration data
+     * into its controller.
+     */
+    private void openTransitionScreen() throws Exception {
+
+        FXMLLoader loader =
+                new FXMLLoader(getClass().getResource("/view/TransitionScreen.fxml"));
+
+        Parent root = loader.load();
+
+        // Access the controller instance to push configuration data before showing the scene
+        TransitionController controller = loader.getController();
+
+        controller.configure(
+                "Practice Scenarios",
+                "You have completed the learning section.\n\n" +
+                        "Next, you will face realistic situations based on common social engineering attacks.\n\n" +
+                        "Read each scenario carefully and choose how you would respond.",
+                "Start Scenarios"
+        );
+
+        // Scene swap
+        Stage stage = (Stage) nextButton.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    /**
+     * Updates UI components to reflect the page at the given index.
+     * Adjusts the 'Next' button text based on progression state.
      * @param index The position of the page in the list.
      */
     private void showPage(int index) {
         TheoryPage page = pages.get(index);
+        boolean isLastPage = index == pages.size() - 1;
 
         titleLabel.setText(page.getTitle());
         renderBody(page.getBody());
@@ -98,10 +143,20 @@ public class TheoryController {
         // the UI has finished layout updates before scrolling.
         Platform.runLater(() -> bodyScrollPane.setVvalue(0));
 
-        // Disable buttons at the start/end of the list
+        // Navigation state management
+        // Disable 'previous' button at the start of the list
         previousButton.setDisable(index == 0);
-        nextButton.setDisable(index == pages.size() - 1);
+        nextButton.setDisable(false);
 
+        // Handle 'next' button text
+        // Signals the end of the theory section
+        if (isLastPage) {
+            nextButton.setText("Start Scenarios");
+        } else {
+            nextButton.setText("Next");
+        }
+
+        // Handle page indicator label text
         if (pageIndicatorLabel != null) {
             pageIndicatorLabel.setText((index + 1) + " / " + pages.size());
         }
