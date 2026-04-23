@@ -4,35 +4,45 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.WelcomeController">
+<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0"
+            prefHeight="1080.0" prefWidth="1440.0"
+            style="-fx-background-color: #0f172a;"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.controller.WelcomeController">
    <children>
 
-      <!-- Title — identical anchor constraints to TheoryScreen titleLabel -->
-      <Label alignment="CENTER" text="Social Engineering Awareness" textAlignment="CENTER" wrapText="true"
-             AnchorPane.topAnchor="100.0" AnchorPane.bottomAnchor="920.0"
-             AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
+      <!-- App badge / label -->
+      <Label text="CYBERSECURITY AWARENESS TRAINING"
+             style="-fx-font-size: 12px; -fx-text-fill: #3b82f6; -fx-font-weight: bold; -fx-letter-spacing: 2;"
+             AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+             alignment="CENTER" />
 
-      <!-- Body — sits in the same region as TheoryScreen's ScrollPane/bodyContainer -->
-      <VBox fx:id="bodyContainer" alignment="TOP_LEFT" fillWidth="true" spacing="18.0" style="-fx-padding: 30;"
-            AnchorPane.topAnchor="215.0" AnchorPane.bottomAnchor="125.0"
-            AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0">
-      </VBox>
+      <!-- Main title -->
+      <Label text="Social Engineering&#10;Awareness"
+             alignment="CENTER" textAlignment="CENTER" wrapText="true"
+             style="-fx-font-size: 54px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9; -fx-line-spacing: 4px;"
+             AnchorPane.topAnchor="108.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" />
 
-      <!-- Start button — centred in the same footer band as the theory navigation buttons -->
-      <Button fx:id="startButton" text="Start" mnemonicParsing="false" onAction="#handleStartButton"
-              prefHeight="45.0" prefWidth="120.0"
-              AnchorPane.bottomAnchor="80.0" AnchorPane.topAnchor="955.0"
-              AnchorPane.leftAnchor="660.0" AnchorPane.rightAnchor="660.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
+      <!-- Divider accent bar -->
+      <AnchorPane prefHeight="3.0" prefWidth="80.0"
+                  style="-fx-background-color: #3b82f6; -fx-background-radius: 2;"
+                  AnchorPane.topAnchor="285.0" AnchorPane.leftAnchor="680.0" AnchorPane.rightAnchor="680.0" />
+
+      <!-- Body container - populated by controller -->
+      <VBox fx:id="bodyContainer" alignment="TOP_LEFT" fillWidth="true" spacing="20.0"
+            style="-fx-padding: 0;"
+            AnchorPane.topAnchor="320.0" AnchorPane.bottomAnchor="160.0"
+            AnchorPane.leftAnchor="360.0" AnchorPane.rightAnchor="360.0" />
+
+      <!-- Start button -->
+      <Button fx:id="startButton" text="Start Training" mnemonicParsing="false"
+              onAction="#handleStartButton"
+              prefHeight="52.0" prefWidth="220.0"
+              style="-fx-background-color: #3b82f6; -fx-text-fill: #ffffff; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"
+              AnchorPane.bottomAnchor="90.0"
+              AnchorPane.leftAnchor="610.0" AnchorPane.rightAnchor="610.0" />
 
    </children>
 </AnchorPane>

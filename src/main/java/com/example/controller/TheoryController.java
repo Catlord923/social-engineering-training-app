@@ -7,7 +7,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.geometry.Pos;
@@ -24,35 +26,23 @@ import java.util.List;
  */
 public class TheoryController {
 
-    @FXML
-    private Label titleLabel;
-
-    @FXML
-    private ScrollPane bodyScrollPane;
-
-    @FXML
-    private VBox bodyContainer;
-
-    @FXML
-    private Button previousButton;
-
-    @FXML
-    private Button nextButton;
-
-    @FXML
-    private Label pageIndicatorLabel;
+    @FXML private Label titleLabel;
+    @FXML private ScrollPane bodyScrollPane;
+    @FXML private VBox bodyContainer;
+    @FXML private Button previousButton;
+    @FXML private Button nextButton;
+    @FXML private Label pageIndicatorLabel;
 
     private final TheoryDAO theoryDAO = new TheoryDAO();
     private List<TheoryPage> pages;
     private int currentIndex = 0;
 
-    /**
-     * Initializes the view by fetching data and displaying the first page.
-     * Handles the "empty state" if no data is found.
-     */
     @FXML
     public void initialize() {
         pages = theoryDAO.getAllPages();
+
+        // Style the scroll pane viewport to be transparent
+        bodyScrollPane.getStyleClass().add("edge-to-edge");
 
         if (pages != null && !pages.isEmpty()) {
             showPage(currentIndex);
@@ -66,10 +56,7 @@ public class TheoryController {
         bodyContainer.getChildren().clear();
         previousButton.setDisable(true);
         nextButton.setDisable(true);
-
-        if (pageIndicatorLabel != null) {
-            pageIndicatorLabel.setText("0 / 0");
-        }
+        if (pageIndicatorLabel != null) pageIndicatorLabel.setText("0 / 0");
     }
 
     @FXML
@@ -80,16 +67,9 @@ public class TheoryController {
         }
     }
 
-    /**
-     * Logic for the 'Next' button.
-     * Either increments the page or triggers the transition to the next module.
-     */
     @FXML
     private void handleNext() throws Exception {
-
-        if (pages == null) {
-            return;
-        }
+        if (pages == null) return;
 
         if (currentIndex < pages.size() - 1) {
             currentIndex++;
@@ -99,20 +79,11 @@ public class TheoryController {
         }
     }
 
-    /**
-     * Loads the Transition Screen and manually injects configuration data
-     * into its controller.
-     */
     private void openTransitionScreen() throws Exception {
-
-        FXMLLoader loader =
-                new FXMLLoader(getClass().getResource("/view/TransitionScreen.fxml"));
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TransitionScreen.fxml"));
         Parent root = loader.load();
 
-        // Access the controller instance to push configuration data before showing the scene
         TransitionController controller = loader.getController();
-
         controller.configure(
                 "Practice Scenarios",
                 "You have completed the learning section.\n\n" +
@@ -121,17 +92,11 @@ public class TheoryController {
                 "Start Scenarios"
         );
 
-        // Scene swap
         Stage stage = (Stage) nextButton.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
     }
 
-    /**
-     * Updates UI components to reflect the page at the given index.
-     * Adjusts the 'Next' button text based on progression state.
-     * @param index The position of the page in the list.
-     */
     private void showPage(int index) {
         TheoryPage page = pages.get(index);
         boolean isLastPage = index == pages.size() - 1;
@@ -139,54 +104,34 @@ public class TheoryController {
         titleLabel.setText(page.getTitle());
         renderBody(page.getBody());
 
-        // Resets scroll position to the top. Platform.runLater ensures
-        // the UI has finished layout updates before scrolling.
         Platform.runLater(() -> bodyScrollPane.setVvalue(0));
 
-        // Navigation state management
-        // Disable 'previous' button at the start of the list
         previousButton.setDisable(index == 0);
+        // Dim previous button when disabled
+        previousButton.setOpacity(index == 0 ? 0.35 : 1.0);
         nextButton.setDisable(false);
 
-        // Handle 'next' button text
-        // Signals the end of the theory section
-        if (isLastPage) {
-            nextButton.setText("Start Scenarios");
-        } else {
-            nextButton.setText("Next");
-        }
+        nextButton.setText(isLastPage ? "Start Scenarios →" : "Next →");
+        nextButton.setPrefWidth(isLastPage ? 200 : 160);
 
-        // Handle page indicator label text
         if (pageIndicatorLabel != null) {
             pageIndicatorLabel.setText((index + 1) + " / " + pages.size());
         }
     }
 
-    /**
-     * Main parser: Splits raw text into blocks and converts them to JavaFX Labels.
-     * Blocks are separated by double newlines.
-     * @param bodyText The raw string from the database.
-     */
+    // Body Rendering
     private void renderBody(String bodyText) {
         bodyContainer.getChildren().clear();
 
-        if (bodyText == null || bodyText.isBlank()) {
-            return;
-        }
+        if (bodyText == null || bodyText.isBlank()) return;
 
         String cleanedText = cleanText(bodyText);
-        // Split text whenever there are two or more newlines
-        // with whitespace in between (paragraph breaks)
         String[] blocks = cleanedText.split("\\n\\s*\\n");
 
         for (String block : blocks) {
             String trimmedBlock = block.trim();
+            if (trimmedBlock.isEmpty()) continue;
 
-            if (trimmedBlock.isEmpty()) {
-                continue;
-            }
-
-            // Determine block type based on content structure
             if (isBulletBlock(trimmedBlock)) {
                 addBulletBlock(trimmedBlock);
             } else if (isShortHeading(trimmedBlock)) {
@@ -197,100 +142,109 @@ public class TheoryController {
         }
     }
 
-    /**
-     * Sanitizes input text to normalize line breaks and remove indentation.
-     * @return A clean string ready for parsing.
-     */
     private String cleanText(String text) {
         return text
-                .replace("\r\n", "\n") // Convert CRLF line endings to LF
-                .replace("\r", "\n") // Convert CR line endings to LF
-                .replaceAll("(?m)^[ \\t]+", "") // Remove leading tabs/spaces per line - removes indentation
-                .replaceAll("\\n{3,}", "\n\n") // Collapse excessive spacing - 2+ lines
+                .replace("\r\n", "\n")
+                .replace("\r", "\n")
+                .replaceAll("(?m)^[ \\t]+", "")
+                .replaceAll("\\n{3,}", "\n\n")
                 .trim();
     }
 
     private boolean isBulletBlock(String block) {
-        // A block is considered a bullet list if it contains lines starting with a dash
-        String[] lines = block.split("\\n");
-        int bulletCount = 0;
-
-        for (String line : lines) {
-            String trimmed = line.trim();
-            if (trimmed.startsWith("- ")) {
-                bulletCount++;
-            }
+        for (String line : block.split("\\n")) {
+            if (line.trim().startsWith("- ")) return true;
         }
-
-        return bulletCount > 0;
+        return false;
     }
 
-    /**
-     * Heuristic for headings: Must be one line, < 60 chars, and end with a colon.
-     */
     private boolean isShortHeading(String block) {
-        return !block.contains("\n")
-                && block.length() <= 60
-                && block.endsWith(":");
+        return !block.contains("\n") && block.length() <= 60 && block.endsWith(":");
     }
 
-    // --- UI Methods ---
-    // These methods create stylized Labels to keep the text rendering logic clean.
-
+    // UI Components
     private void addParagraph(String text) {
-        Label paragraphLabel = new Label(text);
-        paragraphLabel.setWrapText(true);
-        paragraphLabel.setMaxWidth(Double.MAX_VALUE);
-        paragraphLabel.setAlignment(Pos.TOP_LEFT);
-        paragraphLabel.setStyle(
-                "-fx-font-size: 22px;" +
-                        "-fx-text-fill: #2b2b2b;" +
-                        "-fx-line-spacing: 6px;"
+        Label label = new Label(text);
+        label.setWrapText(true);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setAlignment(Pos.TOP_LEFT);
+        label.setStyle(
+                "-fx-font-size: 20px;" +
+                        "-fx-text-fill: #cbd5e1;" +
+                        "-fx-line-spacing: 7px;"
         );
-
-        bodyContainer.getChildren().add(paragraphLabel);
+        bodyContainer.getChildren().add(label);
     }
 
     private void addHeading(String text) {
-        Label headingLabel = new Label(text);
-        headingLabel.setWrapText(true);
-        headingLabel.setMaxWidth(Double.MAX_VALUE);
-        headingLabel.setAlignment(Pos.TOP_LEFT);
-        headingLabel.setStyle(
+        // Strip trailing colon for display
+        String display = text.endsWith(":") ? text.substring(0, text.length() - 1) : text;
+
+        Label label = new Label(display);
+        label.setWrapText(true);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setAlignment(Pos.TOP_LEFT);
+        label.setStyle(
                 "-fx-font-size: 24px;" +
                         "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #1f1f1f;"
+                        "-fx-text-fill: #f1f5f9;" +
+                        "-fx-padding: 12 0 2 0;"
         );
-
-        bodyContainer.getChildren().add(headingLabel);
+        bodyContainer.getChildren().add(label);
     }
 
     private void addBulletBlock(String block) {
-        String[] lines = block.split("\\n");
+        // Wrap bullets in a styled card container
+        VBox bulletCard = new VBox(12);
+        bulletCard.setStyle(
+                "-fx-background-color: #1e293b;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 18 22 18 22;"
+        );
 
-        for (String line : lines) {
+        for (String line : block.split("\\n")) {
             String trimmed = line.trim();
-
-            if (trimmed.isEmpty()) {
-                continue;
-            }
+            if (trimmed.isEmpty()) continue;
 
             if (trimmed.startsWith("- ")) {
-                // Convert "- text" into "• text" with indentation
-                Label bulletLabel = new Label("• " + trimmed.substring(2));
-                bulletLabel.setWrapText(true);
-                bulletLabel.setMaxWidth(Double.MAX_VALUE);
-                bulletLabel.setAlignment(Pos.TOP_LEFT);
-                bulletLabel.setStyle(
-                        "-fx-font-size: 21px;" +
-                                "-fx-text-fill: #2b2b2b;" +
-                                "-fx-line-spacing: 4px;" +
-                                "-fx-padding: 0 0 0 12;"
+                HBox row = new HBox(12);
+                row.setAlignment(Pos.TOP_LEFT);
+
+                // Bullet dot
+                Region dot = new Region();
+                dot.setPrefSize(7, 7);
+                dot.setMinSize(7, 7);
+                dot.setMaxSize(7, 7);
+                dot.setStyle("-fx-background-color: #3b82f6; -fx-background-radius: 4;");
+                // Nudge dot down to align with text cap height
+                dot.setTranslateY(8);
+
+                Label text = new Label(trimmed.substring(2));
+                text.setWrapText(true);
+                text.setMaxWidth(Double.MAX_VALUE);
+                text.setStyle(
+                        "-fx-font-size: 19px;" +
+                                "-fx-text-fill: #cbd5e1;" +
+                                "-fx-line-spacing: 4px;"
                 );
-                bodyContainer.getChildren().add(bulletLabel);
+                HBox.setHgrow(text, javafx.scene.layout.Priority.ALWAYS);
+
+                row.getChildren().addAll(dot, text);
+                bulletCard.getChildren().add(row);
             } else {
-                addParagraph(trimmed); // Handle non-bullet lines within a bullet list block
+                // Non-bullet line within a bullet block - treat as sub-heading
+                Label lbl = new Label(trimmed);
+                lbl.setWrapText(true);
+                lbl.setMaxWidth(Double.MAX_VALUE);
+                lbl.setStyle(
+                        "-fx-font-size: 19px;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-text-fill: #94a3b8;"
+                );
+                bulletCard.getChildren().add(lbl);
             }
         }
+
+        bodyContainer.getChildren().add(bulletCard);
     }
 }

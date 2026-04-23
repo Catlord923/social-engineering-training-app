@@ -4,26 +4,43 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0" prefHeight="1080.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controller.TransitionController">
+<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0"
+            prefHeight="1080.0" prefWidth="1440.0"
+            style="-fx-background-color: #0f172a;"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.controller.TransitionController">
    <children>
 
-      <!-- Title — identical anchor constraints to TheoryScreen titleLabel -->
-      <Label fx:id="titleLabel" alignment="CENTER" text="Title Label" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="920.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="100.0">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
+      <!-- Centred card -->
+      <VBox alignment="CENTER" spacing="0.0"
+            style="-fx-background-color: #1e293b; -fx-background-radius: 16; -fx-padding: 60 70 60 70;"
+            AnchorPane.topAnchor="160.0" AnchorPane.bottomAnchor="160.0"
+            AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0">
 
-      <VBox fx:id="bodyContainer" alignment="TOP_LEFT" fillWidth="true" spacing="18.0" style="-fx-padding: 30;" AnchorPane.bottomAnchor="145.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="215.0">
+         <!-- Icon badge -->
+         <Label text="▶" style="-fx-font-size: 28px; -fx-text-fill: #3b82f6; -fx-padding: 0 0 24 0;" />
+
+         <!-- Title -->
+         <Label fx:id="titleLabel" alignment="CENTER" textAlignment="CENTER" wrapText="true"
+                style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9; -fx-padding: 0 0 28 0;" />
+
+         <!-- Divider -->
+         <AnchorPane prefHeight="2.0" prefWidth="80.0"
+                     style="-fx-background-color: #3b82f6; -fx-background-radius: 2;" />
+
+         <!-- Body paragraphs -->
+         <VBox fx:id="bodyContainer" alignment="TOP_CENTER" fillWidth="true" spacing="16.0"
+               style="-fx-padding: 32 0 40 0;" />
+
+         <!-- CTA button -->
+         <Button fx:id="continueButton" mnemonicParsing="false" onAction="#handleContinueButton"
+                 text="Continue"
+                 prefHeight="52.0" prefWidth="240.0"
+                 style="-fx-background-color: #3b82f6; -fx-text-fill: #ffffff; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" />
+
       </VBox>
-
-      <Button fx:id="continueButton" layoutX="630.0" layoutY="935.0" mnemonicParsing="false" onAction="#handleContinueButton" prefHeight="45.0" prefWidth="180.0" text="Continue" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="630.0" AnchorPane.rightAnchor="630.0" AnchorPane.topAnchor="935.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
 
    </children>
 </AnchorPane>
