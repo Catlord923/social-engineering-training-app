@@ -1,3 +1,7 @@
+--------------------
+-- THEORY CONTENT
+--------------------
+
 INSERT INTO theory_pages (page_order, title, body) VALUES
 (
     1,
@@ -87,6 +91,10 @@ Remember: attackers want quick reactions. A safe user pauses, checks, and verifi
 
 Think before you click. Verify before you trust. Report when something feels wrong.'
 );
+
+---------------------
+-- SCENARIO CONTENT
+---------------------
 
 -- EMAIL PHISHING SCENARIO
 INSERT INTO scenarios (scenario_order, type, title, intro_text, learning_outcomes)
@@ -317,3 +325,147 @@ VALUES
     (14, 1, 'Open link', 2, NULL),
     (14, 2, 'Ask friend separately', 3, NULL),
     (14, 3, 'Ignore', 4, NULL);
+
+-----------------
+-- QUIZ CONTENT
+-----------------
+
+-- QUESTION 1
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           1,
+           'An email claims your university account will be suspended today unless you log in through the provided link. Which detail is the strongest warning sign?',
+           'A strong phishing indicator is pressure to act immediately through a provided link, especially when account consequences are used to create urgency.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 1, 'The message mentions your university account', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 2, 'It creates urgency and pushes you to use its link immediately', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 3, 'It was sent during working hours', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 4, 'The message is written in full sentences', 0);
+
+-- QUESTION 2
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           2,
+           'Which situation is the best example of social engineering?',
+           'Social engineering focuses on manipulating a person into taking an unsafe action rather than directly attacking a system.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 1, 'A hacker brute-forces a password using automated tools', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 2, 'A caller pretends to be IT support and asks for your login code', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 3, 'A system installs a scheduled software update', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 4, 'A firewall blocks unknown incoming traffic', 0);
+
+-- QUESTION 3
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           3,
+           'You receive a message saying your password expires today and you must log in immediately. What should you do first?',
+           'Unexpected urgent password messages should be verified through an official channel before taking action.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),1,'Click the link immediately to avoid losing access',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),2,'Verify the request using the official website or IT support contact',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),3,'Reply with your username to check if it is genuine',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),4,'Forward it to classmates',0);
+
+-- QUESTION 4
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           4,
+           'A message appears to come from a friend asking you to urgently send them a verification code they "accidentally" sent to your phone. What is the safest response?',
+           'Even when a message appears to come from someone familiar, unexpected requests for codes should be verified through a separate trusted channel.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 1, 'Send the code because the sender is someone you know', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 2, 'Ignore the code and verify the request with your friend through another channel', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 3, 'Post the code in the chat so they can see it quickly', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 4, 'Forward the message to more friends to ask for advice', 0);
+
+-- QUESTION 5
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           5,
+           'Which option best explains why people still fall for phishing even when they know about it?',
+           'Knowledge alone does not always prevent mistakes because attackers exploit pressure, habit, distraction, trust, and emotion.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 1, 'Because phishing only works on people with no internet experience', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 2, 'Because users may act quickly under pressure without carefully checking the message', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 3, 'Because all phishing messages are technically undetectable', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 4, 'Because antivirus software causes users to trust everything', 0);
+
+-- QUESTION 6
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           6,
+           'Which behaviour most increases the chance of falling for a social engineering attack?',
+           'Attackers often succeed when users act quickly without verifying requests.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),1,'Taking time to inspect suspicious messages',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),2,'Using official websites instead of message links',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),3,'Responding quickly without checking because the request seems urgent',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),4,'Ignoring requests for passwords',0);
+
+-- QUESTION 7
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           7,
+           'Which message is the strongest example of impersonation or pretexting?',
+           'Pretexting involves adopting a believable role or story to gain trust and obtain information or action.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 1, 'A lecturer posts the assignment deadline on the course page', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 2, 'Someone claiming to be from payroll asks you to confirm your bank details urgently', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 3, 'A friend shares a photo in a group chat', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 4, 'A browser asks whether you want to save a password', 0);
+
+-- QUESTION 8
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           8,
+           'What is the safest way to handle a suspicious login warning email from your bank?',
+           'The safest response is to avoid the message''s links and instead use a trusted route you already know, such as the bank''s official website or app.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 1, 'Click the email link but check the page carefully afterwards', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 2, 'Reply to the email asking if it is genuine', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 3, 'Open the bank''s official app or type the official website manually', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 4, 'Ignore all bank emails permanently', 0);
+
+-- QUESTION 9
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           9,
+           'A colleague emails asking for confidential information but the tone seems unusual. What is the safest response?',
+           'Even known contacts can have compromised accounts, so unusual requests should be verified separately.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),1,'Send the information because you know the sender',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),2,'Reply asking if they are serious, then send it',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),3,'Verify the request through another trusted method before sharing anything',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),4,'Ignore every future email from that colleague',0);
+
+-- QUESTION 10
+INSERT INTO quiz_questions (question_order, question_text, explanation)
+VALUES (
+           10,
+           'Which combination is the strongest warning sign of a phishing message?',
+           'Multiple warning signs together increase suspicion, especially urgency, unexpected links, and credential requests.'
+       );
+
+INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),1,'Friendly greeting and clear grammar',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),2,'Urgent language, unexpected link, and request for login details',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),3,'A message sent during the afternoon',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),4,'Use of your first name',0);
