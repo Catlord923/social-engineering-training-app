@@ -13,7 +13,10 @@ import javafx.scene.Node;
 import javafx.fxml.FXML;
 
 /**
- * Reusable controller for transition screens between major app modules.
+ * Controller for reusable transition screens shown between major modules.
+ *
+ * <p>This screen is used to introduce the next application section,
+ * display short instructional text, and navigate to the next FXML view.</p>
  */
 public class TransitionController {
 
@@ -21,19 +24,18 @@ public class TransitionController {
     @FXML private VBox bodyContainer;
     @FXML private Button continueButton;
 
-    /** FXML resource path the continue button will navigate to (e.g. "/view/ScenarioScreen.fxml"). */
+    /**
+     * FXML resource path to be loaded when the continue button is pressed.
+     */
     private String targetFxml;
 
-    @FXML
-    public void initialize() {}
-
     /**
-     * Configures the transition screen.
+     * Configures the transition screen content and destination view.
      *
-     * @param title       Heading text.
-     * @param bodyText    Body copy (blank lines become paragraph breaks).
-     * @param buttonText  CTA button label.
-     * @param targetFxml  FXML resource path to load when the button is pressed.
+     * @param title heading text displayed at the top of the screen
+     * @param bodyText explanatory body text; blank lines create paragraphs
+     * @param buttonText text shown on the continue button
+     * @param targetFxml FXML file to open when continuing
      */
     public void configure(String title, String bodyText, String buttonText, String targetFxml) {
         this.targetFxml = targetFxml;
@@ -45,6 +47,7 @@ public class TransitionController {
         if (bodyText == null || bodyText.isBlank()) return;
 
         String cleanedText = cleanText(bodyText);
+        // Split text into paragraphs using blank lines as separators
         String[] paragraphs = cleanedText.split("\\n\\s*\\n");
 
         for (String paragraph : paragraphs) {
@@ -55,22 +58,31 @@ public class TransitionController {
         }
     }
 
-    /** Backwards-compatible overload that keeps the original hard-coded scenario destination. */
-    public void configure(String title, String bodyText, String buttonText) {
-        configure(title, bodyText, buttonText, "/view/ScenarioScreen.fxml");
-    }
-
+    /**
+     * Loads the configured destination screen when the continue button is pressed.
+     *
+     * @param event button click event
+     * @throws Exception if the target FXML cannot be loaded
+     */
     @FXML
     private void handleContinueButton(ActionEvent event) throws Exception {
-        String fxml = (targetFxml != null && !targetFxml.isBlank())
-                ? targetFxml
-                : "/view/ScenarioScreen.fxml";
-        Parent root = FXMLLoader.load(getClass().getResource(fxml));
+        if (targetFxml == null || targetFxml.isBlank()) {
+            throw new IllegalStateException(
+                    "Transition target not configured."
+            );
+        }
+        Parent root = FXMLLoader.load(getClass().getResource(targetFxml));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
     }
 
+    /**
+     * Normalizes line endings and spacing in body text.
+     *
+     * @param text raw body text
+     * @return cleaned text ready for rendering
+     */
     private String cleanText(String text) {
         return text
                 .replace("\r\n", "\n")
@@ -79,6 +91,12 @@ public class TransitionController {
                 .trim();
     }
 
+    /**
+     * Creates a styled paragraph label for the transition body area.
+     *
+     * @param text paragraph content
+     * @return formatted JavaFX label
+     */
     private Label makeParagraph(String text) {
         Label label = new Label(text);
         label.setWrapText(true);

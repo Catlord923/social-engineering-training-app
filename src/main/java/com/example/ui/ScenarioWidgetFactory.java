@@ -2,6 +2,7 @@ package com.example.ui;
 
 import com.example.model.ScenarioElement;
 import com.example.model.ScenarioOption;
+
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -18,16 +19,14 @@ import java.util.function.Consumer;
 import java.util.List;
 
 /**
- * Stateless factory that constructs all JavaFX UI nodes used in the scenario screen.
- * Contains no DAO access and holds no mutable state - every method is a pure builder.
+ * Factory-style UI builder responsible for constructing reusable JavaFX
+ * widgets used in the scenario screen.
  *
- * <p>Interactive callbacks are injected at construction time so the factory never
- * needs to reference the controller directly:</p>
- * <ul>
- *   <li>{@code onOptionSelected}  — called when the user picks a scenario option button.</li>
- *   <li>{@code onBonusSubmit}     — called when the bonus form passes validation.</li>
- *   <li>{@code onBonusSkip}       — called when the user clicks "Skip for now".</li>
- * </ul>
+ * <p>This class does not store scenario progress or application state. It only
+ * holds callback references that are attached to generated controls.</p>
+ *
+ * <p>It does not access the database, manage scenario flow, or perform screen
+ * navigation.</p>
  */
 public class ScenarioWidgetFactory {
 
@@ -35,16 +34,28 @@ public class ScenarioWidgetFactory {
     private final Runnable onBonusSubmit;
     private final Runnable onBonusSkip;
 
+    /**
+     * Creates a scenario widget factory.
+     *
+     * @param onOptionSelected callback triggered when a scenario option is selected
+     * @param onBonusSubmit callback triggered when the bonus form is submitted successfully
+     * @param onBonusSkip callback triggered when the bonus form is skipped
+     */
     public ScenarioWidgetFactory(
             Consumer<ScenarioOption> onOptionSelected,
             Runnable onBonusSubmit,
             Runnable onBonusSkip) {
         this.onOptionSelected = onOptionSelected;
-        this.onBonusSubmit    = onBonusSubmit;
-        this.onBonusSkip      = onBonusSkip;
+        this.onBonusSubmit = onBonusSubmit;
+        this.onBonusSkip = onBonusSkip;
     }
 
-    // Element Widgets
+    /**
+     * Builds an email-style widget from grouped email scenario elements.
+     *
+     * @param parts elements containing email sender, subject, and body content
+     * @return email-style JavaFX card
+     */
     public VBox buildEmailWidget(List<ScenarioElement> parts) {
         VBox card = new VBox();
         card.setStyle(
@@ -120,6 +131,12 @@ public class ScenarioWidgetFactory {
         return card;
     }
 
+    /**
+     * Builds a mobile SMS-style widget.
+     *
+     * @param parts elements containing SMS sender and message content
+     * @return SMS-style JavaFX card
+     */
     public VBox buildSmsWidget(List<ScenarioElement> parts) {
         VBox phone = new VBox();
         phone.setMaxWidth(520);
@@ -179,6 +196,12 @@ public class ScenarioWidgetFactory {
         return phone;
     }
 
+    /**
+     * Builds a fake security popup window widget.
+     *
+     * @param parts elements containing popup title and body text
+     * @return popup-style JavaFX card
+     */
     public VBox buildPopupWidget(List<ScenarioElement> parts) {
         VBox dialog = new VBox();
         dialog.setMaxWidth(680);
@@ -246,6 +269,12 @@ public class ScenarioWidgetFactory {
         return dialog;
     }
 
+    /**
+     * Builds a chat-message style widget.
+     *
+     * @param parts elements containing chat sender and message content
+     * @return chat-style JavaFX widget
+     */
     public VBox buildChatWidget(List<ScenarioElement> parts) {
         VBox wrapper = new VBox(4);
         wrapper.setMaxWidth(560);
@@ -302,15 +331,29 @@ public class ScenarioWidgetFactory {
         return wrapper;
     }
 
-    // Accent Boxes
+    /**
+     * Builds a warning-style accent box.
+     *
+     * @param el scenario element containing label and body text
+     * @return styled warning box
+     */
     public VBox buildWarningBox(ScenarioElement el) {
         return buildAccentBox(el, "#1a1200", "#f59e0b", "⚠", "#fbbf24", "#fde68a");
     }
 
+    /**
+     * Builds an information-style accent box.
+     *
+     * @param el scenario element containing label and body text
+     * @return styled information box
+     */
     public VBox buildInfoBox(ScenarioElement el) {
         return buildAccentBox(el, "#0c1a2e", "#3b82f6", "ℹ", "#60a5fa", "#bfdbfe");
     }
 
+    /**
+     * Shared helper for building coloured accent boxes.
+     */
     private VBox buildAccentBox(ScenarioElement el, String bg, String stripeColor,
                                 String iconChar, String iconColor, String textColor) {
         HBox outer = new HBox(0);
@@ -352,7 +395,12 @@ public class ScenarioWidgetFactory {
         return new VBox(outer);
     }
 
-    // Link Label
+    /**
+     * Builds a hyperlink-style label for scenario links.
+     *
+     * @param el scenario element containing the displayed link text
+     * @return styled link label
+     */
     public Label buildLinkLabel(ScenarioElement el) {
         Label label = new Label("🔗  " + el.getValue());
         label.setWrapText(true);
@@ -366,14 +414,18 @@ public class ScenarioWidgetFactory {
         return label;
     }
 
-    // Option Buttons
     /**
-     * Builds and returns the options container node (HBox or individual Buttons added
-     * to the caller's VBox). Returns the HBox row for 2-3 options, or {@code null} for
-     * the vertical case where buttons are added directly to {@code container}.
+     * Renders selectable scenario options into the provided container.
+     *
+     * <p>Small option sets are displayed in a horizontal row. Larger option
+     * sets are displayed vertically to preserve readability.</p>
+     *
+     * @param container container that receives the option buttons
+     * @param options scenario options to render
      */
     public void renderOptionsInto(VBox container, List<ScenarioOption> options) {
         int count = options.size();
+        // Use a horizontal layout for small option sets, vertical layout otherwise
         if (count >= 2 && count <= 3) {
             HBox row = new HBox(12);
             row.setAlignment(Pos.CENTER);
@@ -396,6 +448,9 @@ public class ScenarioWidgetFactory {
         }
     }
 
+    /**
+     * Builds a styled option button.
+     */
     private Button makeOptionButton(String text) {
         Button button = new Button(text);
         button.setPrefHeight(48);
@@ -427,16 +482,16 @@ public class ScenarioWidgetFactory {
         return button;
     }
 
-    // Result Card
     /**
-     * Builds the terminal/bonus result card (the colored feedback panel).
+     * Builds a result card shown after a terminal scenario outcome.
      *
-     * @param accentColor hex color for border, icon, and button
-     * @param bgColor     hex color for card background
-     * @param resultIcon  "✓" or "✕"
-     * @param tagText     short tier label e.g. "Best Choice"
-     * @param title       main heading inside the card
-     * @param bodyText    explanatory paragraph(s)
+     * @param accentColor colour used for the border and icon
+     * @param bgColor card background colour
+     * @param resultIcon result symbol, usually {@code ✓} or {@code ✕}
+     * @param tagText short outcome label
+     * @param title result heading
+     * @param bodyText explanatory result text
+     * @return styled result card
      */
     public VBox buildResultCard(String accentColor, String bgColor,
                                 String resultIcon, String tagText,
@@ -503,7 +558,13 @@ public class ScenarioWidgetFactory {
         return card;
     }
 
-    /** Builds a styled action button used below result cards. */
+    /**
+     * Builds a styled action button used below result cards.
+     *
+     * @param text button text
+     * @param accentColor button background colour
+     * @return styled action button
+     */
     public Button buildActionButton(String text, String accentColor) {
         Button button = new Button(text);
         button.setMaxWidth(Double.MAX_VALUE);
@@ -519,7 +580,15 @@ public class ScenarioWidgetFactory {
         return button;
     }
 
-    // Immediate Feedback Toast
+    /**
+     * Builds the temporary feedback panel shown after certain choices.
+     *
+     * <p>The Continue button is created here, but its action is assigned by
+     * the caller because the controller owns scenario progression.</p>
+     *
+     * @param feedbackText feedback message to display
+     * @return feedback toast containing message and Continue button
+     */
     public VBox buildFeedbackToast(String feedbackText) {
         VBox toast = new VBox(10);
         toast.setStyle(
@@ -559,11 +628,14 @@ public class ScenarioWidgetFactory {
         return toast;
     }
 
-    // Bonus Registration Form
     /**
-     * Builds the fake "register to view results" form widget.
-     * Fires {@code onBonusSubmit} only when all fields pass validation;
-     * fires {@code onBonusSkip} immediately when "Skip for now" is clicked.
+     * Builds the fake registration form used as the bonus phishing scenario.
+     *
+     * <p>The form intentionally looks like a routine account prompt. Submitting
+     * the form represents falling for the trap, while choosing the secondary
+     * skip link represents the safer action.</p>
+     *
+     * @return fake registration form widget
      */
     public VBox buildRegistrationFormWidget() {
         VBox card = new VBox();
@@ -660,7 +732,7 @@ public class ScenarioWidgetFactory {
             }
         });
 
-        // Clear each error as soon as the user fixes the field
+        // Hide validation errors as soon as the user fixes each field
         nameField.textProperty().addListener((obs, o, n) -> {
             if (nameError.isVisible() && !n.trim().isEmpty()) setError(nameError, false);
         });
@@ -673,7 +745,7 @@ public class ScenarioWidgetFactory {
 
         body.getChildren().add(submitBtn);
 
-        // Skip link - the correct choice, intentionally styled to look secondary
+        // The safer action is intentionally styled as a secondary option
         Label skipLink = new Label("Skip for now");
         skipLink.setMaxWidth(Double.MAX_VALUE);
         skipLink.setAlignment(Pos.CENTER);
@@ -690,7 +762,12 @@ public class ScenarioWidgetFactory {
         return card;
     }
 
-    // Shared Helpers
+    /**
+     * Builds a standard body text label used for plain scenario content.
+     *
+     * @param text label text
+     * @return styled body label
+     */
     public Label makeBodyLabel(String text) {
         Label label = new Label(text);
         label.setWrapText(true);
@@ -704,6 +781,9 @@ public class ScenarioWidgetFactory {
         return label;
     }
 
+    /**
+     * Builds a labelled input row for the bonus form.
+     */
     private HBox makeFormRow(String labelText, javafx.scene.control.TextInputControl field) {
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
@@ -727,6 +807,9 @@ public class ScenarioWidgetFactory {
         return row;
     }
 
+    /**
+     * Builds a hidden validation error label.
+     */
     private Label makeErrorLabel(String message) {
         Label lbl = new Label(message);
         lbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #dc2626;");
@@ -735,6 +818,12 @@ public class ScenarioWidgetFactory {
         return lbl;
     }
 
+    /**
+     * Shows or hides a validation error label.
+     *
+     * <p>{@code managed} is updated with visibility so hidden errors do not
+     * reserve space in the form layout.</p>
+     */
     private void setError(Label errorLabel, boolean show) {
         errorLabel.setVisible(show);
         errorLabel.setManaged(show);

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="1080.0" maxWidth="1440.0" minHeight="1080.0" minWidth="1440.0"
+            prefHeight="1080.0" prefWidth="1440.0"
+            style="-fx-background-color: #0f172a;"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.controller.QuizController">
+   <children>
+
+      <!-- Module label -->
+      <Label text="QUIZ"
+             style="-fx-font-size: 11px; -fx-text-fill: #3b82f6; -fx-font-weight: bold; -fx-letter-spacing: 3;"
+             AnchorPane.topAnchor="56.0" AnchorPane.leftAnchor="180.0" />
+
+      <!-- Title -->
+      <Label fx:id="titleLabel" alignment="TOP_LEFT" wrapText="true"
+             style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9;"
+             AnchorPane.topAnchor="85.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0"
+             prefHeight="52.0" />
+
+      <!-- Progress indicator -->
+      <Label fx:id="progressLabel" alignment="TOP_LEFT"
+             style="-fx-font-size: 14px; -fx-text-fill: #64748b; -fx-font-weight: bold;"
+             AnchorPane.topAnchor="148.0" AnchorPane.leftAnchor="180.0" />
+
+      <!-- Divider -->
+      <AnchorPane prefHeight="2.0"
+                  style="-fx-background-color: #1e293b;"
+                  AnchorPane.topAnchor="180.0"
+                  AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" />
+
+      <!-- Question text -->
+      <Label fx:id="questionLabel" alignment="TOP_LEFT" wrapText="true"
+             style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f1f5f9; -fx-line-spacing: 5px;"
+             AnchorPane.topAnchor="204.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0"
+             prefHeight="100.0" />
+
+      <!-- Scrollable body: options + feedback -->
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                  style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;"
+                  AnchorPane.topAnchor="318.0" AnchorPane.bottomAnchor="130.0"
+                  AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0">
+         <content>
+            <VBox spacing="16.0" style="-fx-padding: 10 10 30 10;">
+
+               <!-- Answer options -->
+               <VBox fx:id="optionsContainer" spacing="10.0" />
+
+               <!-- Feedback card (hidden until an answer is selected) -->
+               <VBox fx:id="feedbackContainer" spacing="0.0" />
+
+            </VBox>
+         </content>
+      </ScrollPane>
+
+      <!-- Footer divider -->
+      <AnchorPane prefHeight="1.0"
+                  style="-fx-background-color: #1e293b;"
+                  AnchorPane.bottomAnchor="129.0"
+                  AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" />
+
+      <!-- Next / Finish button -->
+      <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNextButton"
+              text="Next →"
+              prefHeight="46.0" prefWidth="180.0" disable="true"
+              style="-fx-background-color: #3b82f6; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"
+              AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="180.0" />
+
+   </children>
+</AnchorPane>

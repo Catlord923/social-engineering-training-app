@@ -13,7 +13,7 @@
             fx:controller="com.example.controller.TransitionController">
    <children>
 
-      <!-- Centred card -->
+      <!-- Centered card -->
       <VBox alignment="CENTER" spacing="0.0"
             style="-fx-background-color: #1e293b; -fx-background-radius: 16; -fx-padding: 60 70 60 70;"
             AnchorPane.topAnchor="160.0" AnchorPane.bottomAnchor="160.0"

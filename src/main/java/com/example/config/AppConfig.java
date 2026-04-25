@@ -4,35 +4,38 @@ import java.util.Properties;
 import java.io.InputStream;
 
 /**
- * Global configuration manager.
- * Loads settings from app.properties on class initialization.
+ * Central application configuration loader.
+ *
+ * <p>Loads key-value settings from {@code app.properties} located on the
+ * application classpath and provides static access to configuration values.</p>
  */
 public class AppConfig {
 
     private static final Properties properties = new Properties();
 
     static {
-        // Loads resource from the classpath (src/main/resources in Maven)
+        // Load configuration once when the class is first used
         try (InputStream input = AppConfig.class
                 .getClassLoader()
                 .getResourceAsStream("app.properties")) {
 
             if (input == null) {
-                // Fail-fast if config is missing; the app shouldn't start without settings
+                // Application cannot continue without required config
                 throw new RuntimeException("app.properties not found");
             }
 
             properties.load(input);
 
         } catch (Exception e) {
-            // Log stack trace for debugging
             e.printStackTrace();
         }
     }
 
     /**
-     * Retrieves a configuration value by its key.
-     * @return Value as String, or null if the key doesn't exist.
+     * Returns a configuration value for the supplied key.
+     *
+     * @param key property name
+     * @return property value, or {@code null} if the key does not exist
      */
     public static String get(String key) {
         return properties.getProperty(key);

@@ -12,14 +12,19 @@ import javafx.scene.Node;
 import javafx.fxml.FXML;
 
 /**
- * Controller for the initial Welcome screen.
- * Displays introductory text and handles the transition to the main application modules.
+ * Controller for the initial welcome screen.
+ *
+ * <p>Displays introductory training information and starts the learning
+ * sequence when the user chooses to continue.</p>
  */
 public class WelcomeController {
 
     @FXML
     private VBox bodyContainer;
 
+    /**
+     * Static welcome screen paragraphs displayed in order.
+     */
     private static final String[] PARAGRAPHS = {
             "Many cyber attacks succeed not because of technical weaknesses, but because attackers manipulate people through trust, urgency, fear, or curiosity.",
             "This application will help you recognise common threats, understand warning signs, and make safer decisions online.",
@@ -27,6 +32,12 @@ public class WelcomeController {
             "1. Learn the key concepts\n2. Practice with realistic scenarios\n3. Test your knowledge"
     };
 
+    /**
+     * Initializes the welcome screen after the FXML file is loaded.
+     *
+     * <p>Paragraph labels are created dynamically so formatting remains easier
+     * to maintain than storing large styled text directly in FXML.</p>
+     */
     @FXML
     public void initialize() {
         for (int i = 0; i < PARAGRAPHS.length; i++) {
@@ -34,6 +45,14 @@ public class WelcomeController {
         }
     }
 
+    /**
+     * Builds a styled paragraph label for the welcome screen body.
+     *
+     * @param text paragraph text
+     * @param isIntroToList {@code true} when the paragraph introduces the
+     *                      numbered list and should use emphasis styling
+     * @return formatted paragraph label
+     */
     private Label makeParagraph(String text, boolean isIntroToList) {
         Label label = new Label(text);
         label.setWrapText(true);
@@ -58,6 +77,12 @@ public class WelcomeController {
         return label;
     }
 
+    /**
+     * Opens the theory module when the Start button is pressed.
+     *
+     * @param event button click event
+     * @throws Exception if the next screen cannot be loaded
+     */
     @FXML
     private void handleStartButton(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(

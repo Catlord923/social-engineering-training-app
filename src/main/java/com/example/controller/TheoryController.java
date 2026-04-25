@@ -20,9 +20,13 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * Controller for the TheoryScreen view.
- * Handles navigation between pages and dynamically renders raw text into
- * stylized UI components (headings, bullets, paragraphs).
+ * Controller for the theory learning module.
+ *
+ * <p>Retrieves theory pages through {@link TheoryDAO}, displays each page
+ * in sequence, and manages navigation through the learning module.</p>
+ *
+ * <p>The controller also converts plain stored text into formatted JavaFX
+ * components such as headings, paragraphs, and bullet sections.</p>
  */
 public class TheoryController {
 
@@ -37,11 +41,17 @@ public class TheoryController {
     private List<TheoryPage> pages;
     private int currentIndex = 0;
 
+    /**
+     * Initializes the screen after FXML loading.
+     *
+     * <p>Retrieves theory pages, applies ScrollPane styling,
+     * and displays the first available page.</p>
+     */
     @FXML
     public void initialize() {
         pages = theoryDAO.getAllPages();
 
-        // Style the scroll pane viewport to be transparent
+        // Applies custom CSS class to remove default ScrollPane edges
         bodyScrollPane.getStyleClass().add("edge-to-edge");
 
         if (pages != null && !pages.isEmpty()) {
@@ -51,6 +61,9 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Displays a fallback state when no theory pages are available.
+     */
     private void handleEmptyState() {
         titleLabel.setText("No theory pages found");
         bodyContainer.getChildren().clear();
@@ -59,6 +72,9 @@ public class TheoryController {
         if (pageIndicatorLabel != null) pageIndicatorLabel.setText("0 / 0");
     }
 
+    /**
+     * Navigates to the previous theory page.
+     */
     @FXML
     private void handlePrevious() {
         if (currentIndex > 0) {
@@ -67,6 +83,14 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Navigates to the next theory page.
+     *
+     * <p>If the current page is the last page, the transition
+     * screen for scenarios is opened instead.</p>
+     *
+     * @throws Exception if the next screen cannot be loaded
+     */
     @FXML
     private void handleNext() throws Exception {
         if (pages == null) return;
@@ -79,6 +103,11 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Opens the transition screen leading into the scenario module.
+     *
+     * @throws Exception if the FXML file cannot be loaded
+     */
     private void openTransitionScreen() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TransitionScreen.fxml"));
         Parent root = loader.load();
@@ -89,7 +118,8 @@ public class TheoryController {
                 "You have completed the learning section.\n\n" +
                         "Next, you will face realistic situations based on common social engineering attacks.\n\n" +
                         "Read each scenario carefully and choose how you would respond.",
-                "Start Scenarios"
+                "Start Scenarios",
+                "/view/ScenarioScreen.fxml"
         );
 
         Stage stage = (Stage) nextButton.getScene().getWindow();
@@ -97,6 +127,11 @@ public class TheoryController {
         stage.show();
     }
 
+    /**
+     * Displays the requested theory page and updates navigation controls.
+     *
+     * @param index index of the page to display
+     */
     private void showPage(int index) {
         TheoryPage page = pages.get(index);
         boolean isLastPage = index == pages.size() - 1;
@@ -104,6 +139,7 @@ public class TheoryController {
         titleLabel.setText(page.getTitle());
         renderBody(page.getBody());
 
+        // Resets scroll position after content rendering completes.
         Platform.runLater(() -> bodyScrollPane.setVvalue(0));
 
         previousButton.setDisable(index == 0);
@@ -119,7 +155,11 @@ public class TheoryController {
         }
     }
 
-    // Body Rendering
+    /**
+     * Converts raw body text into styled UI blocks.
+     *
+     * @param bodyText raw page text from the database
+     */
     private void renderBody(String bodyText) {
         bodyContainer.getChildren().clear();
 
@@ -142,6 +182,12 @@ public class TheoryController {
         }
     }
 
+    /**
+     * Normalizes text formatting before rendering.
+     *
+     * @param text raw text input
+     * @return cleaned text
+     */
     private String cleanText(String text) {
         return text
                 .replace("\r\n", "\n")
@@ -151,6 +197,12 @@ public class TheoryController {
                 .trim();
     }
 
+    /**
+     * Determines whether a block contains bullet list entries.
+     *
+     * @param block text block
+     * @return {@code true} if bullet formatting is detected
+     */
     private boolean isBulletBlock(String block) {
         for (String line : block.split("\\n")) {
             if (line.trim().startsWith("- ")) return true;
@@ -158,11 +210,21 @@ public class TheoryController {
         return false;
     }
 
+    /**
+     * Determines whether a block should be styled as a heading.
+     *
+     * @param block text block
+     * @return {@code true} if the block matches heading rules
+     */
     private boolean isShortHeading(String block) {
         return !block.contains("\n") && block.length() <= 60 && block.endsWith(":");
     }
 
-    // UI Components
+    /**
+     * Adds a styled paragraph label to the body container.
+     *
+     * @param text paragraph text
+     */
     private void addParagraph(String text) {
         Label label = new Label(text);
         label.setWrapText(true);
@@ -176,6 +238,11 @@ public class TheoryController {
         bodyContainer.getChildren().add(label);
     }
 
+    /**
+     * Adds a styled heading label to the body container.
+     *
+     * @param text heading text
+     */
     private void addHeading(String text) {
         // Strip trailing colon for display
         String display = text.endsWith(":") ? text.substring(0, text.length() - 1) : text;
@@ -193,6 +260,11 @@ public class TheoryController {
         bodyContainer.getChildren().add(label);
     }
 
+    /**
+     * Adds a styled bullet-card container to the body content area.
+     *
+     * @param block block-containing bullet lines
+     */
     private void addBulletBlock(String block) {
         // Wrap bullets in a styled card container
         VBox bulletCard = new VBox(12);
@@ -232,7 +304,7 @@ public class TheoryController {
                 row.getChildren().addAll(dot, text);
                 bulletCard.getChildren().add(row);
             } else {
-                // Non-bullet line within a bullet block - treat as sub-heading
+                // Non-bullet line within a bullet block - treated as sub-heading
                 Label lbl = new Label(trimmed);
                 lbl.setWrapText(true);
                 lbl.setMaxWidth(Double.MAX_VALUE);

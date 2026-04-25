@@ -19,31 +19,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Thin coordinator for the scenario screen.
+ * Controller for the scenario screen.
  *
- * <p>Responsibilities:
- * <ul>
- *   <li>Owns the {@code @FXML} node references.</li>
- *   <li>Wires {@link ScenarioService} and {@link ScenarioWidgetFactory} together.</li>
- *   <li>Implements {@link ScenarioService.NavigationCallback} to translate service
- *       events into concrete UI updates.</li>
- * </ul>
+ * <p>Coordinates the scenario UI by connecting {@link ScenarioService}
+ * with {@link ScenarioWidgetFactory}.</p>
  *
- * <p>It contains no DAO calls, no widget-building code, and no navigation state.
+ * <p>The service manages scenario flow and state, while the factory builds
+ * reusable UI widgets. This controller receives service callbacks and applies
+ * the corresponding updates to the JavaFX view.</p>
  */
 public class ScenarioController implements ScenarioService.NavigationCallback {
 
     @FXML private Label titleLabel;
     @FXML private Label promptLabel;
     @FXML private Label progressLabel;
-    @FXML private VBox  contentContainer;
-    @FXML private VBox  optionsContainer;
+    @FXML private VBox contentContainer;
+    @FXML private VBox optionsContainer;
 
     private ScenarioService service;
     private ScenarioWidgetFactory factory;
 
+    /**
+     * Initializes the scenario screen after the FXML file is loaded.
+     *
+     * <p>Creates the widget factory, creates the scenario service, and starts
+     * the first scenario.</p>
+     */
     @FXML
     public void initialize() {
+        // Pass controller handlers to the widget factory for user actions
         factory = new ScenarioWidgetFactory(
                 this::handleOptionSelected,
                 this::handleBonusSubmit,
@@ -53,30 +57,42 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         service.start();
     }
 
-    // User action forwarders
-    // These are the lambdas / method references passed into the factory and service.
-    // They exist here (rather than inline) so the controller remains the single point
-    // that decides what to forward where.
-
+    /**
+     * Forwards a selected scenario option to the service layer.
+     *
+     * @param option option selected by the user
+     */
     private void handleOptionSelected(ScenarioOption option) {
         service.handleOptionSelected(option);
     }
 
+    /**
+     * Forwards bonus form submission to the service layer.
+     */
     private void handleBonusSubmit() {
         service.handleBonusSubmit();
     }
 
+    /**
+     * Forwards bonus form skipping to the service layer.
+     */
     private void handleBonusSkip() {
         service.handleBonusSkip();
     }
 
-    // NavigationCallback implementation
+    /**
+     * Displays a non-terminal scenario stage.
+     *
+     * <p>The stage content is rendered into the main content area, while
+     * selectable options are rendered into the options area.</p>
+     */
     @Override
     public void onShowStage(Scenario scenario, ScenarioStage stage,
-                            List<ScenarioElement> elements, List<ScenarioOption> options) {
+                            List<ScenarioElement> elements, List<ScenarioOption> options,
+                            int totalScenarios) {
         titleLabel.setText(scenario.getTitle());
         promptLabel.setText(stage.getPrompt());
-        progressLabel.setText("Scenario " + scenario.getScenarioOrder() + " of 4");
+        progressLabel.setText("Scenario " + scenario.getScenarioOrder() + " of " + totalScenarios);
 
         contentContainer.getChildren().clear();
         optionsContainer.getChildren().clear();
@@ -85,12 +101,19 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         factory.renderOptionsInto(optionsContainer, options);
     }
 
+    /**
+     * Displays the result screen for a completed scenario.
+     *
+     * <p>The result card is styled differently depending on whether the user
+     * reached a best, safe, or unsafe outcome.</p>
+     */
     @Override
-    public void onShowTerminal(Scenario scenario, ScenarioStage stage, int scenarioOrder) {
-        // Resolve tier colours
+    public void onShowTerminal(Scenario scenario, ScenarioStage stage,
+                               int scenarioOrder, int totalScenarios) {
         String resultIcon, accentColor, bgColor, tagText;
         Boolean success = stage.getSuccess();
 
+        // Determine result styling based on the scenario outcome
         if (Boolean.TRUE.equals(success)) {
             boolean isBest = stage.getFeedbackTitle() != null
                     && stage.getFeedbackTitle().toLowerCase().contains("best");
@@ -105,7 +128,7 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
 
         titleLabel.setText(scenario.getTitle());
         promptLabel.setText("Here is what happened:");
-        progressLabel.setText("Scenario " + scenario.getScenarioOrder() + " of 4");
+        progressLabel.setText("Scenario " + scenario.getScenarioOrder() + " of " + totalScenarios);
 
         contentContainer.getChildren().clear();
         optionsContainer.getChildren().clear();
@@ -115,20 +138,30 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
                         stage.getFeedbackTitle(), stage.getFeedbackText())
         );
 
-        String btnText = scenarioOrder < 4 ? "Next Scenario →" : "Complete Training →";
+        String btnText = scenarioOrder < totalScenarios ? "Next Scenario →" : "Complete Training →";
         Button continueButton = factory.buildActionButton(btnText, accentColor);
         continueButton.setOnAction(e -> service.handleContinueAfterTerminal());
         optionsContainer.getChildren().add(continueButton);
     }
 
+    /**
+     * Displays immediate feedback before moving to the next scenario stage.
+     *
+     * <p>Existing option buttons are disabled while the feedback message is
+     * visible so the user cannot make another selection before continuing.</p>
+     */
     @Override
     public void onShowImmediateFeedback(String feedbackText, int nextStageOrder) {
         optionsContainer.getChildren().forEach(node -> node.setDisable(true));
 
         VBox toast = factory.buildFeedbackToast(feedbackText);
 
-        // The Continue button is the last child of the toast - its action is
-        // wired here so the controller (not the factory) owns the navigation decision.
+        /*
+        The Continue button is the last child of the toast.
+        The button action is set here because the controller handles
+        screen flow and progression logic.
+        The factory only builds the UI
+        */
         Button continueBtn = (Button) toast.getChildren().get(toast.getChildren().size() - 1);
         continueBtn.setOnAction(e -> {
             contentContainer.getChildren().remove(toast);
@@ -138,6 +171,9 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         contentContainer.getChildren().add(toast);
     }
 
+    /**
+     * Displays the bonus phishing form scenario.
+     */
     @Override
     public void onShowBonusScenario() {
         titleLabel.setText("View Your Results");
@@ -150,6 +186,12 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         contentContainer.getChildren().add(factory.buildRegistrationFormWidget());
     }
 
+    /**
+     * Displays the result of the bonus phishing scenario.
+     *
+     * @param skipped {@code true} if the user skipped the form;
+     *                {@code false} if the user submitted it
+     */
     @Override
     public void onShowBonusTerminal(boolean skipped) {
         String accentColor, bgColor, resultIcon, tagText, feedbackTitle, feedbackBody;
@@ -196,6 +238,9 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         optionsContainer.getChildren().add(finishButton);
     }
 
+    /**
+     * Opens the transition screen that leads to the quiz module.
+     */
     @Override
     public void onNavigateToQuiz() {
         try {
@@ -221,6 +266,11 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         }
     }
 
+    /**
+     * Displays an error state on the scenario screen.
+     *
+     * @param message error message to show to the user
+     */
     @Override
     public void onError(String message) {
         titleLabel.setText("Error");
@@ -230,10 +280,17 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
         optionsContainer.getChildren().clear();
     }
 
-    // Element rendering
-    // Kept here (rather than in the factory) because it mutates contentContainer
-    // directly and routes between multiple factory methods based on element type.
+    /**
+     * Renders scenario elements into the main content container.
+     *
+     * <p>Related elements are grouped before rendering so composite widgets,
+     * such as emails, SMS messages, popups, and chat messages, can be built
+     * from multiple database rows.</p>
+     *
+     * @param elements scenario elements to render
+     */
     private void renderElements(List<ScenarioElement> elements) {
+        // Store related rows so composite widgets can be built later
         List<ScenarioElement> emailParts  = new ArrayList<>();
         List<ScenarioElement> smsParts    = new ArrayList<>();
         List<ScenarioElement> popupParts  = new ArrayList<>();

@@ -7,8 +7,10 @@ import java.sql.SQLException;
 import java.sql.Connection;
 
 /**
- * Manages the lifecycle of the database connection.
- * Uses a Lazy Singleton pattern to ensure only one connection is active at a time.
+ * Provides access to the application's database connection.
+ *
+ * <p>This class uses lazy initialization to create the connection only when it
+ * is first requested. The same connection instance is then reused while valid.</p>
  */
 public class DatabaseManager {
 
@@ -16,16 +18,20 @@ public class DatabaseManager {
     private static Connection connection;
 
     /**
-     * Retrieves the active database connection, creating it if it doesn't exist.
-     * @return An active Connection object.
-     * @throws SQLException If the connection fails or the URL is invalid.
+     * Returns an active database connection.
+     *
+     * <p>If no connection exists, or the previous connection has been closed,
+     * a new connection is created using the JDBC URL defined in
+     * {@code app.properties}.</p>
+     *
+     * @return active {@link Connection} instance
+     * @throws SQLException if the connection cannot be created
      */
     public static Connection getConnection() throws SQLException {
-        // Lazy initialization: only connect when first requested or
-        // if the previous connection died
+        // Create a connection only when first needed or after closure
         if (connection == null || connection.isClosed()) {
 
-            // Retrieves the JDBC URL (e.g., jdbc:sqlite:app.db) from the config loader
+            // Retrieves the JDBC URL from the config loader
             String url = AppConfig.get("db.url");
             connection = DriverManager.getConnection(url);
         }
