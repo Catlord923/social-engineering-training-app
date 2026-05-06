@@ -27,7 +27,7 @@ public class WelcomeController {
      */
     private static final String[] PARAGRAPHS = {
             "Many cyber attacks succeed not because of technical weaknesses, but because attackers manipulate people through trust, urgency, fear, or curiosity.",
-            "This application will help you recognise common threats, understand warning signs, and make safer decisions online.",
+            "This application will help you recognize common threats, understand warning signs, and make safer decisions online.",
             "You will complete three stages:",
             "1. Learn the key concepts\n2. Practice with realistic scenarios\n3. Test your knowledge"
     };

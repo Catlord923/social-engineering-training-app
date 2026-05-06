@@ -291,10 +291,12 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
      */
     private void renderElements(List<ScenarioElement> elements) {
         // Store related rows so composite widgets can be built later
-        List<ScenarioElement> emailParts  = new ArrayList<>();
-        List<ScenarioElement> smsParts    = new ArrayList<>();
-        List<ScenarioElement> popupParts  = new ArrayList<>();
-        List<ScenarioElement> chatParts   = new ArrayList<>();
+        List<ScenarioElement> emailParts   = new ArrayList<>();
+        List<ScenarioElement> smsParts     = new ArrayList<>();
+        List<ScenarioElement> popupParts   = new ArrayList<>();
+        List<ScenarioElement> chatParts    = new ArrayList<>();
+        List<ScenarioElement> browserParts = new ArrayList<>();
+        List<ScenarioElement> linkParts    = new ArrayList<>();
 
         for (ScenarioElement el : elements) {
             switch (el.getElementType()) {
@@ -302,16 +304,38 @@ public class ScenarioController implements ScenarioService.NavigationCallback {
                 case "SMS_SENDER",  "SMS_MESSAGE"                -> smsParts.add(el);
                 case "POPUP_TITLE", "POPUP_BODY"                 -> popupParts.add(el);
                 case "CHAT_SENDER", "CHAT_MESSAGE"               -> chatParts.add(el);
+                case "BROWSER_URL", "BROWSER_BODY",
+                     "BROWSER_TITLE", "BROWSER_SITE_NAME",
+                     "BROWSER_BADGE", "BROWSER_BUTTON"           -> browserParts.add(el);
                 case "WARNING_BOX" -> contentContainer.getChildren().add(factory.buildWarningBox(el));
                 case "INFO_BOX"    -> contentContainer.getChildren().add(factory.buildInfoBox(el));
-                case "LINK"        -> contentContainer.getChildren().add(factory.buildLinkLabel(el));
+                case "LINK"        -> linkParts.add(el);
                 default            -> contentContainer.getChildren().add(factory.makeBodyLabel(el.getValue()));
             }
         }
 
-        if (!emailParts.isEmpty())  contentContainer.getChildren().add(factory.buildEmailWidget(emailParts));
-        if (!smsParts.isEmpty())    contentContainer.getChildren().add(factory.buildSmsWidget(smsParts));
-        if (!popupParts.isEmpty())  contentContainer.getChildren().add(factory.buildPopupWidget(popupParts));
-        if (!chatParts.isEmpty())   contentContainer.getChildren().add(factory.buildChatWidget(chatParts));
+        // LINK elements are passed into the relevant composite widget based on context.
+        // If multiple widget types are present on the same stage (unusual but possible),
+        // links are routed to the first matching type in priority order.
+        boolean hasEmail   = !emailParts.isEmpty();
+        boolean hasSms     = !smsParts.isEmpty();
+        boolean hasChat    = !chatParts.isEmpty();
+
+        if      (hasEmail) emailParts.addAll(linkParts);
+        else if (hasSms)   smsParts.addAll(linkParts);
+        else if (hasChat)  chatParts.addAll(linkParts);
+
+        if (hasEmail)                contentContainer.getChildren().add(factory.buildEmailWidget(emailParts));
+        if (hasSms)                  contentContainer.getChildren().add(factory.buildSmsWidget(smsParts));
+        if (!popupParts.isEmpty())   contentContainer.getChildren().add(factory.buildPopupWidget(popupParts));
+        if (hasChat)                 contentContainer.getChildren().add(factory.buildChatWidget(chatParts));
+        if (!browserParts.isEmpty()) contentContainer.getChildren().add(factory.buildBrowserWidget(browserParts));
+
+        // Standalone links - only rendered if no composite widget claimed them
+        if (!hasEmail && !hasSms && !hasChat) {
+            for (ScenarioElement el : linkParts) {
+                contentContainer.getChildren().add(factory.buildLinkLabel(el));
+            }
+        }
     }
 }

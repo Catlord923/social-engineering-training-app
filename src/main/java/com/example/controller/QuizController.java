@@ -279,9 +279,9 @@ public class QuizController implements QuizService.QuizCallback {
      */
     private String buildResultMessage(int score, int total) {
         if (score == total) {
-            return "Excellent result. You showed strong awareness of common social engineering tactics and safe response behaviours.";
+            return "Excellent result. You showed strong awareness of common social engineering tactics and safe response behaviors.";
         } else if (score >= (int) Math.ceil(total * 0.8)) {
-            return "Very good result. You recognised most warning signs and generally chose safe responses.";
+            return "Very good result. You recognized most warning signs and generally chose safe responses.";
         } else if (score >= (int) Math.ceil(total * 0.6)) {
             return "Good effort. You understood many of the key ideas, but some warning signs and response choices may need more attention.";
         } else {

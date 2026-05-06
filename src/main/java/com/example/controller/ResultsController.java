@@ -82,8 +82,8 @@ public class ResultsController {
         }
 
         String label  = skipped ? "Skipped the form (correct)"      : "Submitted the form (fell for it)";
-        String colour = skipped ? "#22c55e"                          : "#ef4444";
-        addStatRow(bonusBreakdownContainer, label, skipped ? "✓" : "✕", colour);
+        String color = skipped ? "#22c55e"                          : "#ef4444";
+        addStatRow(bonusBreakdownContainer, label, skipped ? "✓" : "✕", color);
     }
 
     /**
@@ -102,12 +102,12 @@ public class ResultsController {
         int score = s.getQuizScore();
         int total = s.getQuizTotal();
         double pct = total > 0 ? (score * 100.0 / total) : 0;
-        String colour = pct >= 80 ? "#22c55e" : pct >= 60 ? "#f59e0b" : "#ef4444";
+        String color = pct >= 80 ? "#22c55e" : pct >= 60 ? "#f59e0b" : "#ef4444";
 
         addStatRow(quizBreakdownContainer,
                 "Score",
                 score + " / " + total + "  (" + Math.round(pct) + "%)",
-                colour);
+                color);
     }
 
     /**
@@ -133,30 +133,65 @@ public class ResultsController {
     /**
      * Builds an overall summary message based on total performance.
      *
+     * <p>Thresholds are calibrated for 7 scenarios. Tiers are based on the
+     * number of unsafe choices made and quiz performance, with bonus outcome
+     * as a secondary modifier on the top two tiers.</p>
+     *
      * @param s active application session
      * @return overall feedback message
      */
     private String buildOverallMessage(AppSession s) {
-        int best = s.getBestChoiceCount();
+        int best   = s.getBestChoiceCount();
         int unsafe = s.getUnsafeChoiceCount();
+        int total  = s.getScenariosCompleted();
         Boolean bon = s.getBonusSkipped();
-        int qScore = s.getQuizScore();
-        int qTotal = s.getQuizTotal();
+        int qScore  = s.getQuizScore();
+        int qTotal  = s.getQuizTotal();
         double qPct = qTotal > 0 ? (qScore * 100.0 / qTotal) : 0;
 
-        boolean allBest = best == s.getScenariosCompleted();
-        boolean bonusGood = Boolean.TRUE.equals(bon);
+        boolean allBest    = best == total;
+        boolean bonusGood  = Boolean.TRUE.equals(bon);
         boolean quizStrong = qPct >= 80;
+        boolean quizOk     = qPct >= 60;
 
+        // Tier 1 - perfect or near-perfect across everything
         if (allBest && bonusGood && quizStrong) {
-            return "Outstanding performance. You consistently chose the best response, recognised the phishing trap, and demonstrated strong quiz knowledge. You are well-equipped to handle social engineering threats.";
-        } else if (unsafe == 0 && bonusGood && quizStrong) {
-            return "Strong result. You stayed safe throughout the scenarios, correctly identified the phishing form, and scored well on the quiz. A few scenarios had even safer responses available - worth reviewing.";
-        } else if (unsafe == 0 && qPct >= 60) {
-            return "You avoided unsafe choices in the scenarios and performed reasonably on the quiz. Review any scenarios where you did not choose the best option, and consider retaking the quiz to improve your score.";
-        } else {
-            return "There are some areas to work on. Review the theory section and replay the scenarios, paying close attention to warning signs such as urgency, unexpected requests, and unusual sender details.";
+            return "Outstanding performance. You chose the best response in every scenario, " +
+                    "correctly identified the phishing form, and demonstrated strong quiz knowledge. " +
+                    "You are well-equipped to recognize and respond to social engineering threats.";
         }
+
+        // Tier 2 - no unsafe choices, good quiz, may have missed best on a few scenario options
+        if (unsafe == 0 && bonusGood && quizOk) {
+            return "Strong result. You avoided unsafe choices across all seven scenarios and " +
+                    "correctly identified the phishing form. Review any scenarios where a stronger " +
+                    "response was available - reporting is almost always better than simply ignoring.";
+        }
+
+        // Tier 3 - mostly safe, 1-2 slips, reasonable quiz
+        if (unsafe <= 2 && quizOk) {
+            return "A reasonable performance overall. You made safe choices in most scenarios " +
+                    "but fell for " + unsafe + (unsafe == 1 ? " attack." : " attacks.") +
+                    " Review those scenarios carefully and pay attention to the warning signs " +
+                    "highlighted in the feedback - urgency, unexpected requests, and unfamiliar senders " +
+                    "are the most reliable indicators.";
+        }
+
+        // Tier 4 - several unsafe choices or weak quiz but not both severely bad
+        if (unsafe <= 4 || quizOk) {
+            return "There are clear areas to work on. You made unsafe choices in " + unsafe +
+                    " out of " + total + " scenarios" +
+                    (quizOk ? "." : " and scored below 60% on the quiz.") +
+                    " Return to the theory section and replay the scenarios, focusing on " +
+                    "verifying requests through official channels before acting.";
+        }
+
+        // Tier 5 - significant unsafe choices and weak quiz
+        return "This training has identified significant gaps in recognizing social engineering. " +
+                "You made unsafe choices in " + unsafe + " out of " + total + " scenarios and " +
+                "scored " + Math.round(qPct) + "% on the quiz. " +
+                "It is strongly recommended that you review all theory pages and redo the scenarios " +
+                "before working with sensitive information or systems.";
     }
 
     /**
@@ -168,9 +203,9 @@ public class ResultsController {
      * @param container destination container
      * @param labelText left label text
      * @param valueText right value text
-     * @param accentColour text colour for the value
+     * @param accentColor text color for the value
      */
-    private void addStatRow(VBox container, String labelText, String valueText, String accentColour) {
+    private void addStatRow(VBox container, String labelText, String valueText, String accentColor) {
         HBox row = new HBox(12);
         row.setAlignment(Pos.CENTER_LEFT);
         row.setPadding(new Insets(10, 16, 10, 16));
@@ -190,7 +225,7 @@ public class ResultsController {
         val.setStyle(
                 "-fx-font-size: 16px;" +
                         "-fx-font-weight: bold;" +
-                        "-fx-text-fill: " + accentColour + ";"
+                        "-fx-text-fill: " + accentColor + ";"
         );
 
         row.getChildren().addAll(lbl, spacer, val);

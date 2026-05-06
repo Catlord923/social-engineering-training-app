@@ -19,12 +19,12 @@ In simple terms: social engineering is psychological manipulation used to make p
 
 Common psychological triggers include:
 - Urgency: "Act now or your account will be locked"
-- Authority: pretending to be a manager, bank, or official organisation
+- Authority: pretending to be a manager, bank, or official organization
 - Fear: warning about a problem or threat
 - Curiosity: tempting the victim with surprising information
 - Reward: offering something free or beneficial
 
-These attacks do not rely only on technical skill. They rely on human behaviour. This is why users are often described as the weakest link in cybersecurity, and why awareness is an important part of defence.'
+These attacks do not rely only on technical skill. They rely on human behavior. This is why users are often described as the weakest link in cybersecurity, and why awareness is an important part of defense.'
 ),
 (
     3,
@@ -62,7 +62,7 @@ Although the method may change, the goal is usually the same: get the victim to 
 - unusual sender addresses or phone numbers
 - poor spelling, strange wording, or awkward formatting
 - offers that seem too good to be true
-- messages pretending to be from trusted organisations but asking you to act immediately
+- messages pretending to be from trusted organizations but asking you to act immediately
 - websites that look slightly wrong or have unusual URLs
 
 A useful habit is to stop and ask:
@@ -76,7 +76,7 @@ Taking a few extra seconds to question a message can prevent a serious mistake.'
 (
     5,
     'How To Stay Safe',
-    'The best defence against social engineering is careful behaviour. Good security habits can reduce the chance of becoming a victim.
+    'The best defense against social engineering is careful behavior. Good security habits can reduce the chance of becoming a victim.
 
 Follow these basic rules:
 - do not click links or open attachments from suspicious messages
@@ -130,6 +130,7 @@ VALUES
      'Correct. Reporting the email is the strongest response. The message showed multiple phishing indicators, including suspicious sender details, urgency, a generic greeting, and a fake link.');
 
 -- EMAIL PHISHING SCENARIO STAGE 1 ELEMENTS
+-- stage_id = 1
 INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
 VALUES
     (1, 1, 'EMAIL_FROM', 'From', 'Bank Security Team <security-alerts@secure-bankverify.com>', NULL),
@@ -138,17 +139,17 @@ VALUES
      'Dear Customer,
 
      We detected unusual activity on your bank account.
-     To avoid temporary suspension, verify your account immediately using the secure link below:
-
-     https://online-secure-bankverify.com/login
+     To avoid temporary suspension, verify your account immediately using the secure link below.
 
      Failure to act within 24 hours may result in restricted access.
 
      Regards,
      Bank Security Team',
-     NULL);
+     NULL),
+    (1, 4, 'LINK', NULL, 'https://online-secure-bankverify.com/login', NULL);
 
 -- EMAIL PHISHING SCENARIO STAGE 2 ELEMENTS
+-- stage_id = 2
 INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
 VALUES
     (2, 1, 'EMAIL_FROM', 'From', 'Bank Security Team <security-alerts@secure-bankverify.com>', NULL),
@@ -157,16 +158,15 @@ VALUES
      'Dear Customer,
 
      We detected unusual activity on your bank account.
-     To avoid temporary suspension, verify your account immediately using the secure link below:
-
-     https://online-secure-bankverify.com/login
+     To avoid temporary suspension, verify your account immediately using the secure link below.
 
      Failure to act within 24 hours may result in restricted access.
 
      Regards,
      Bank Security Team',
      NULL),
-    (2, 4, 'WARNING_BOX', 'Warning signs found',
+    (2, 4, 'LINK', NULL, 'https://online-secure-bankverify.com/login', NULL),
+    (2, 5, 'WARNING_BOX', 'Warning signs found',
      'Suspicious sender domain
      Generic greeting
      Pressure to act quickly
@@ -210,19 +210,21 @@ VALUES
 
     (2, 3, 'Result', 'You ignored the message.', 1, 1,
      'Safe choice',
-     'Ignoring the message avoided immediate risk. A stronger response is to verify the delivery using the courier’s official app or website.'),
+     'Ignoring the message avoided immediate risk. A stronger response is to verify the delivery using the courier''s official app or website.'),
 
     (2, 4, 'Result', 'You checked the official courier service separately.', 1, 1,
      'Best choice',
      'Correct. Verifying through the official app or website is the safest approach. It avoids interacting with a potentially malicious link.');
 
 -- SMISHING SCENARIO ELEMENTS
+-- stage_id = 6
 INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
 VALUES
     (6, 1, 'SMS_SENDER', 'From', 'ParcelTrack Alerts', NULL),
     (6, 2, 'SMS_MESSAGE', NULL,
-     'Your parcel delivery has been delayed. Confirm your details now to avoid return: http://trk-package-help.com',
-     NULL);
+     'Your parcel delivery has been delayed. Confirm your details now to avoid return.',
+     NULL),
+    (6, 3, 'LINK', NULL, 'http://trk-package-help.com', NULL);
 
 -- SMISHING SCENARIO OPTIONS
 INSERT INTO scenario_options (stage_id, option_order, option_text, next_stage_order, immediate_feedback)
@@ -263,6 +265,7 @@ VALUES
      'Installing software promoted by a suspicious popup can lead to malware or remote-access compromise.');
 
 -- TECH SUPPORT SCENARIO ELEMENTS
+-- stage_id = 10
 INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
 VALUES
     (10, 1, 'POPUP_TITLE', NULL, 'Windows Alert: Your device is infected!', NULL),
@@ -309,15 +312,17 @@ VALUES
 
     (4, 4, 'Result', 'You ignored the message.', 1, 1,
      'Safe choice',
-     'Ignoring the message avoided the risk. Verifying separately would give you even more confidence about whether the friend’s account was compromised.');
+     'Ignoring the message avoided the risk. Verifying separately would give you even more confidence about whether the friend''s account was compromised.');
 
 -- SOCIAL MEDIA SCENARIO ELEMENTS
+-- stage_id = 14
 INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
 VALUES
     (14, 1, 'CHAT_SENDER', 'Friend', 'Alex', NULL),
     (14, 2, 'CHAT_MESSAGE', NULL,
-     'Is this you in this photo? http://photo-tagged-you.net',
-     NULL);
+     'Is this you in this photo?',
+     NULL),
+    (14, 3, 'LINK', NULL, 'http://photo-tagged-you.net', NULL);
 
 -- SOCIAL MEDIA SCENARIO OPTIONS
 INSERT INTO scenario_options (stage_id, option_order, option_text, next_stage_order, immediate_feedback)
@@ -325,6 +330,196 @@ VALUES
     (14, 1, 'Open link', 2, NULL),
     (14, 2, 'Ask friend separately', 3, NULL),
     (14, 3, 'Ignore', 4, NULL);
+
+-- SPEAR PHISHING SCENARIO
+INSERT INTO scenarios (scenario_order, type, title, intro_text, learning_outcomes)
+VALUES (
+           5,
+           'EMAIL',
+           'Spear Phishing',
+           'You receive a course-related email that appears to come from a lecturer asking you to review an attached document.',
+           'Context-based targeting tactics
+       Suspicious attachments
+       Sender verification
+       Targeted phishing awareness'
+       );
+
+-- SPEAR PHISHING SCENARIO STAGES
+-- scenario_id = 5; stages get ids 18, 19, 20, 21, 22
+INSERT INTO scenario_stages
+(scenario_id, stage_order, stage_title, prompt, is_terminal, is_success, feedback_title, feedback_text)
+VALUES
+    (5, 1, 'Inbox', 'A course-related email arrives in your inbox.', 0, NULL, NULL, NULL),
+
+    (5, 2, 'Inspection', 'You inspect the sender and attachment details more carefully.', 0, NULL, NULL, NULL),
+
+    (5, 3, 'Result', 'You opened the attachment.', 1, 0,
+     'Unsafe choice',
+     'This was a targeted phishing attempt. Spear phishing does not always need to use your name; it can feel convincing by matching your role, studies, deadline, or current tasks. Unexpected attachments should be treated carefully, especially when the sender address does not fully match the real organization.'),
+
+    (5, 4, 'Result', 'You verified the request through the official university system.', 1, 1,
+     'Best choice',
+     'Correct. Checking the request through an official platform or trusted contact avoids interacting with a potentially malicious attachment and confirms whether the message is genuine.'),
+
+    (5, 5, 'Result', 'You deleted the email.', 1, 1,
+     'Safe choice',
+     'Deleting the email avoided the immediate risk. However, verifying or reporting the message would be stronger because targeted attacks may also affect other students or staff.');
+
+-- SPEAR PHISHING SCENARIO STAGE 1 ELEMENTS
+-- stage_id = 18
+INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
+VALUES
+    (18, 1, 'EMAIL_FROM', 'From', 'Course Coordinator <course-coordinator@university-support.net>', NULL),
+    (18, 2, 'EMAIL_SUBJECT', 'Subject', 'Updated assessment feedback attached', NULL),
+    (18, 3, 'EMAIL_BODY', NULL,
+     'Hello,
+
+     I noticed an issue with the latest assessment submissions and attached the updated feedback document.
+     Please open it today and confirm the changes before marks are finalised.
+
+     Regards,
+     Course Coordinator',
+     NULL),
+    (18, 4, 'LINK', NULL, 'Assessment_Feedback_Update.zip', NULL);
+
+-- SPEAR PHISHING SCENARIO STAGE 2 ELEMENTS
+-- stage_id = 19
+INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
+VALUES
+    (19, 1, 'EMAIL_FROM', 'From', 'Course Coordinator <course-coordinator@university-support.net>', NULL),
+    (19, 2, 'EMAIL_SUBJECT', 'Subject', 'Updated assessment feedback attached', NULL),
+    (19, 3, 'EMAIL_BODY', NULL,
+     'Hello,
+
+     I noticed an issue with the latest assessment submissions and attached the updated feedback document.
+     Please open it today and confirm the changes before marks are finalised.
+
+     Regards,
+     Course Coordinator',
+     NULL),
+    (19, 4, 'LINK', NULL, 'Assessment_Feedback_Update.zip', NULL),
+    (19, 5, 'WARNING_BOX', 'Warning signs found',
+     'Course-related context creates trust
+     Sender domain does not match the official university domain
+     Unexpected compressed attachment
+     Pressure to act before marks are finalised',
+     NULL);
+
+-- SPEAR PHISHING SCENARIO OPTIONS
+INSERT INTO scenario_options (stage_id, option_order, option_text, next_stage_order, immediate_feedback)
+VALUES
+    (18, 1, 'Open attachment', 3, NULL),
+    (18, 2, 'Inspect sender and attachment', 2, 'Good step. Targeted phishing can look convincing through context, so checking the sender and attachment type is important.'),
+    (18, 3, 'Verify through official university platform', 4, NULL),
+    (18, 4, 'Delete email', 5, NULL),
+
+    (19, 1, 'Open attachment', 3, NULL),
+    (19, 2, 'Verify through official university platform', 4, NULL),
+    (19, 3, 'Delete email', 5, NULL);
+
+-- MFA CODE PRETEXTING SCENARIO
+INSERT INTO scenarios (scenario_order, type, title, intro_text, learning_outcomes)
+VALUES (
+           6,
+           'SOCIAL',
+           'Fake IT Support Request',
+           'Someone claiming to be IT support messages you and asks for a verification code.',
+           'Pretexting
+       Authority pressure
+       MFA code protection
+       Independent verification'
+       );
+
+-- MFA CODE PRETEXTING SCENARIO STAGES
+-- scenario_id = 6; stages get ids 23, 24, 25, 26
+INSERT INTO scenario_stages
+(scenario_id, stage_order, stage_title, prompt, is_terminal, is_success, feedback_title, feedback_text)
+VALUES
+    (6, 1, 'Support Chat', 'An unexpected support message appears.', 0, NULL, NULL, NULL),
+
+    (6, 2, 'Result', 'You shared the verification code.', 1, 0,
+     'Unsafe choice',
+     'Verification codes are security credentials. A real support team should not ask you to share an MFA code in chat or over the phone. Attackers use authority and urgency to make the request feel routine.'),
+
+    (6, 3, 'Result', 'You contacted IT through the official helpdesk.', 1, 1,
+     'Best choice',
+     'Correct. Using the official helpdesk or a known support channel confirms whether the request is legitimate without exposing your verification code.'),
+
+    (6, 4, 'Result', 'You ignored the message.', 1, 1,
+     'Safe choice',
+     'Ignoring the message avoided giving away the code. A stronger response would be to report or verify the request so the suspicious account can be investigated.');
+
+-- MFA CODE PRETEXTING SCENARIO ELEMENTS
+-- stage_id = 23
+INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
+VALUES
+    (23, 1, 'CHAT_SENDER', 'IT Support', 'Campus IT Helpdesk', NULL),
+    (23, 2, 'CHAT_MESSAGE', NULL,
+     'Hi, this is Campus IT. Your account triggered a security alert. We need to confirm your identity now. Please send the 6-digit verification code you just received so we can stop the account lockout.',
+     NULL);
+
+-- MFA CODE PRETEXTING SCENARIO OPTIONS
+INSERT INTO scenario_options (stage_id, option_order, option_text, next_stage_order, immediate_feedback)
+VALUES
+    (23, 1, 'Send the verification code', 2, NULL),
+    (23, 2, 'Contact IT through the official helpdesk', 3, NULL),
+    (23, 3, 'Ignore the message', 4, NULL);
+
+-- BAITING SCENARIO
+INSERT INTO scenarios (scenario_order, type, title, intro_text, learning_outcomes)
+VALUES (
+           7,
+           'POPUP',
+           'Free Software Bait',
+           'A website offers a free premium student software license if you download an installer.',
+           'Baiting attacks
+       Too-good-to-be-true offers
+       Unsafe downloads
+       Use official sources'
+       );
+
+-- BAITING SCENARIO STAGES
+-- scenario_id = 7; stages get ids 27, 28, 29, 30
+INSERT INTO scenario_stages
+(scenario_id, stage_order, stage_title, prompt, is_terminal, is_success, feedback_title, feedback_text)
+VALUES
+    (7, 1, 'Download Offer', 'A tempting software offer appears while browsing.', 0, NULL, NULL, NULL),
+
+    (7, 2, 'Result', 'You downloaded the installer.', 1, 0,
+     'Unsafe choice',
+     'This was a baiting attempt. Attackers often offer free tools, rewards, or cracked software to persuade users to download malware or unwanted remote-access tools.'),
+
+    (7, 3, 'Result', 'You checked the official software provider.', 1, 1,
+     'Best choice',
+     'Correct. Software should be downloaded only from official providers, app stores, or trusted institutional portals. This avoids malicious installers disguised as useful tools.'),
+
+    (7, 4, 'Result', 'You closed the offer.', 1, 1,
+     'Safe choice',
+     'Closing the suspicious offer avoided the download. Checking the official provider would be even stronger if you still needed the software.');
+
+-- BAITING SCENARIO ELEMENTS
+-- stage_id = 27
+INSERT INTO scenario_elements (stage_id, element_order, element_type, label, value, extra_value)
+VALUES
+    (27, 1, 'BROWSER_TITLE', NULL, 'Student Software Portal', NULL),
+    (27, 2, 'BROWSER_URL', NULL, 'student-free-tools-download.com/pdfeditor', NULL),
+    (27, 3, 'BROWSER_SITE_NAME', NULL, '🎓  StudentSoftwareHub', NULL),
+    (27, 4, 'BROWSER_BADGE', NULL, '⭐  Exclusive Student Offer - Limited Time', NULL),
+    (27, 5, 'BROWSER_BODY', NULL,
+     'Your student network has been verified for a free lifetime license of PDF Editor Premium - normally £89/year.
+
+Download the installer below to activate your license before this offer expires.
+
+File: PDFEditorPremium_Setup.exe',
+     NULL),
+    (27, 6, 'BROWSER_BUTTON', NULL, 'Download Free Installer', NULL);
+
+-- BAITING SCENARIO OPTIONS
+INSERT INTO scenario_options (stage_id, option_order, option_text, next_stage_order, immediate_feedback)
+VALUES
+    (27, 1, 'Download installer', 2, NULL),
+    (27, 2, 'Check official software provider', 3, NULL),
+    (27, 3, 'Close offer', 4, NULL);
 
 -----------------
 -- QUIZ CONTENT
@@ -339,10 +534,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 1, 'The message mentions your university account', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 2, 'It creates urgency and pushes you to use its link immediately', 1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 3, 'It was sent during working hours', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 4, 'The message is written in full sentences', 0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 1, 'The message refers to a university account and uses your name', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 2, 'It demands immediate action and directs you to click a link', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 3, 'The message was sent on a weekday during normal office hours', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 1), 4, 'The message is written in clear and grammatically correct English', 0);
 
 -- QUESTION 2
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -353,10 +548,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 1, 'A hacker brute-forces a password using automated tools', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 2, 'A caller pretends to be IT support and asks for your login code', 1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 3, 'A system installs a scheduled software update', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 4, 'A firewall blocks unknown incoming traffic', 0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 1, 'A hacker uses automated tools to guess account passwords', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 2, 'A caller poses as IT support and requests your login code', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 3, 'A system runs a scheduled security update in the background', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 2), 4, 'A firewall detects and blocks an unfamiliar connection', 0);
 
 -- QUESTION 3
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -367,10 +562,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),1,'Click the link immediately to avoid losing access',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),2,'Verify the request using the official website or IT support contact',1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),3,'Reply with your username to check if it is genuine',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),4,'Forward it to classmates',0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),1,'Follow the link in the message before the deadline passes',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),2,'Check the official website or contact IT support to verify',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),3,'Reply to the message with your username to confirm it is real',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 3),4,'Ask a classmate whether they received the same message today',0);
 
 -- QUESTION 4
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -381,10 +576,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 1, 'Send the code because the sender is someone you know', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 2, 'Ignore the code and verify the request with your friend through another channel', 1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 3, 'Post the code in the chat so they can see it quickly', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 4, 'Forward the message to more friends to ask for advice', 0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 1, 'Send the code immediately since the request comes from a trusted friend', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 2, 'Do not send the code and check with your friend by another means', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 3, 'Paste the code into the chat so they can retrieve it quickly', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 4), 4, 'Ask a few other contacts whether the message seems suspicious', 0);
 
 -- QUESTION 5
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -395,24 +590,24 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 1, 'Because phishing only works on people with no internet experience', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 2, 'Because users may act quickly under pressure without carefully checking the message', 1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 3, 'Because all phishing messages are technically undetectable', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 4, 'Because antivirus software causes users to trust everything', 0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 1, 'Phishing only works against users who have never seen it before', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 2, 'Pressure and urgency can make people act without checking first', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 3, 'Modern phishing attacks are impossible to detect without software', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 5), 4, 'Security tools verify every message before it reaches the inbox', 0);
 
 -- QUESTION 6
 INSERT INTO quiz_questions (question_order, question_text, explanation)
 VALUES (
            6,
-           'Which behaviour most increases the chance of falling for a social engineering attack?',
+           'Which behavior most increases the chance of falling for a social engineering attack?',
            'Attackers often succeed when users act quickly without verifying requests.'
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),1,'Taking time to inspect suspicious messages',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),2,'Using official websites instead of message links',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),3,'Responding quickly without checking because the request seems urgent',1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),4,'Ignoring requests for passwords',0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),1,'Pausing to inspect a message before taking any action',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),2,'Navigating to official websites rather than clicking message links',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),3,'Acting on an urgent request without stopping to verify it first',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 6),4,'Declining to share passwords regardless of who is asking',0);
 
 -- QUESTION 7
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -423,10 +618,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 1, 'A lecturer posts the assignment deadline on the course page', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 2, 'Someone claiming to be from payroll asks you to confirm your bank details urgently', 1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 3, 'A friend shares a photo in a group chat', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 4, 'A browser asks whether you want to save a password', 0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 1, 'A lecturer posts an upcoming assignment deadline on the course page', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 2, 'Someone posing as payroll staff requests your bank details urgently', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 3, 'A classmate sends a photo to a shared group chat for feedback', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 7), 4, 'A browser asks whether you want to save your login password', 0);
 
 -- QUESTION 8
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -437,10 +632,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 1, 'Click the email link but check the page carefully afterwards', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 2, 'Reply to the email asking if it is genuine', 0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 3, 'Open the bank''s official app or type the official website manually', 1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 4, 'Ignore all bank emails permanently', 0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 1, 'Click the link in the email but inspect the page carefully once it loads', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 2, 'Reply to the email to ask whether the warning is real', 0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 3, 'Open the bank app directly or type the official address manually', 1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 8), 4, 'Delete the email and stop opening any messages from that sender', 0);
 
 -- QUESTION 9
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -451,10 +646,10 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),1,'Send the information because you know the sender',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),2,'Reply asking if they are serious, then send it',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),3,'Verify the request through another trusted method before sharing anything',1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),4,'Ignore every future email from that colleague',0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),1,'Send the information since the email address belongs to a colleague',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),2,'Verify the request through a separate trusted channel before acting',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),3,'Reply to the email to ask if the request is genuine, then send it',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 9),4,'Block the sender and report the address to your IT department',0);
 
 -- QUESTION 10
 INSERT INTO quiz_questions (question_order, question_text, explanation)
@@ -465,7 +660,7 @@ VALUES (
        );
 
 INSERT INTO quiz_options (question_id, option_order, option_text, is_correct) VALUES
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),1,'Friendly greeting and clear grammar',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),2,'Urgent language, unexpected link, and request for login details',1),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),3,'A message sent during the afternoon',0),
-                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),4,'Use of your first name',0);
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),1,'A friendly greeting, correct spelling, and a familiar sender name',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),2,'Urgent language, an unexpected link, and a request for credentials',1),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),3,'A message received in the afternoon from an address you recognize',0),
+                                                                                  ((SELECT id FROM quiz_questions WHERE question_order = 10),4,'The use of your first name and a professional-looking email signature',0);

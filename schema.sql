@@ -49,7 +49,13 @@ CREATE TABLE scenario_elements (
                                                         'CHAT_MESSAGE',
                                                         'INFO_BOX',
                                                         'WARNING_BOX',
-                                                        'LINK'
+                                                        'LINK',
+                                                        'BROWSER_URL',
+                                                        'BROWSER_BODY',
+                                                        'BROWSER_TITLE',
+                                                        'BROWSER_SITE_NAME',
+                                                        'BROWSER_BADGE',
+                                                        'BROWSER_BUTTON'
                                            )
                                        ),
                                    label TEXT,
