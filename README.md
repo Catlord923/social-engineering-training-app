@@ -1,6 +1,6 @@
 # Social Engineering Training App
 
-A JavaFX desktop application for training users to recognise social engineering attacks through interactive scenarios and a knowledge quiz.
+A JavaFX desktop application for training users to recognize social engineering attacks through interactive scenarios and a knowledge quiz.
 
 ## Features
 
